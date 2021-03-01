@@ -4,18 +4,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-
-# Model for Student
-class Student(db.Model, UserMixin, ):
-    studentId = db.Column(db.Integer, primary_key=True)
+# Model for User
+class User(db.Model, UserMixin, ):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    occupation = db.Column(db.String(120), nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
     def toDict(self):
         return {
-
-            "Student Id": self.studentId,
+            "User Id": self.id,
+            "User Name": self.name,
             "Email": self.email,
+            "Occupation": self.occupation,
             "password": self.password
         }
 
@@ -29,10 +31,6 @@ class Student(db.Model, UserMixin, ):
 
     # To String method
     def _repr_(self):
-        return '<Student Id {}>'.format(self.studentId)
+        return '< User Id {}>'.format(self.id)
 
 
-class FileContents(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db. String(300))
-    data = db.Column(db.LargeBinary)
