@@ -27,17 +27,17 @@ db.create_all(app=app)
 ''' Set up JWT here '''
 
 
-def authenticate(sId, password):
+def authenticate(sid, password):
     # search for the specified user
-    student = models.Student.query.filter_by(studentId=sId).first()
+    user = models.User.query.filter_by(id =sid).first()
     # if user is found and password matches
-    if student and student.check_password(password):
-        return student
+    if user and user.check_password(password):
+        return user
 
 
 # Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
-    return models.Student.query.get(payload['identity'])
+    return models.User.query.get(payload['identity'])
 
 
 jwt = JWT(app, authenticate, identity)
