@@ -18,7 +18,11 @@ deactivate () {
     # be called to get it to forget past commands.  Without forgetting
     # past commands the $PATH changes we made may not be respected
     if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+<<<<<<< HEAD
         hash -r
+=======
+        hash -r 2> /dev/null
+>>>>>>> main
     fi
 
     if [ -n "${_OLD_VIRTUAL_PS1:-}" ] ; then
@@ -37,7 +41,11 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
+<<<<<<< HEAD
 VIRTUAL_ENV="C:\Users\kgg\Desktop\Info_ProjectVer.2\venv"
+=======
+VIRTUAL_ENV="C:\Users\kgg\Desktop\Textbooks\MatchMyInterns\venv"
+>>>>>>> main
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
@@ -54,6 +62,7 @@ fi
 
 if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     _OLD_VIRTUAL_PS1="${PS1:-}"
+<<<<<<< HEAD
     if [ "x(venv) " != x ] ; then
 	PS1="(venv) ${PS1:-}"
     else
@@ -65,6 +74,9 @@ if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
         PS1="(`basename \"$VIRTUAL_ENV\"`)$PS1"
     fi
     fi
+=======
+    PS1="(venv) ${PS1:-}"
+>>>>>>> main
     export PS1
 fi
 
@@ -72,5 +84,9 @@ fi
 # be called to get it to forget past commands.  Without forgetting
 # past commands the $PATH changes we made may not be respected
 if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+<<<<<<< HEAD
     hash -r
+=======
+    hash -r 2> /dev/null
+>>>>>>> main
 fi
