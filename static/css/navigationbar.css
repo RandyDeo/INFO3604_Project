@@ -19,11 +19,12 @@ li a {
 }
 
 li a:hover:not(.active) {
-     background-color: #86dac5;
+     /*background-color: #0085b9;*/
+     background-color: #6DB6D6;
 }
 
 .active {
-         background-color: #5fceb2;
+         background-color: #006992;
 }
 
 .right{
@@ -43,4 +44,31 @@ nav {
 
 body{
     margin:0;
+    font-family: Helvetica;
+}
+
+h1{
+    color: #006992;
+    padding-left: 50px;
+}
+
+h3{
+    color: #6DB6D6;
+    padding-left: 50px;
+}
+
+button{
+    background-color: #6DB6D6;
+    color: white;
+    font-size: 14px;
+    width: 190px;
+    height: 60px;
+    margin: 50px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+  background-color: #006992;
 }

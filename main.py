@@ -4,7 +4,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
 
-from models import db, Student, FileContents
+from models import db, User
 
 ''' Begin boilerplate code '''
 
@@ -27,17 +27,17 @@ db.create_all(app=app)
 ''' Set up JWT here '''
 
 
-def authenticate(sId, password):
+def authenticate(sid, password):
     # search for the specified user
-    student = models.Student.query.filter_by(studentId=sId).first()
+    user = models.User.query.filter_by(id =sid).first()
     # if user is found and password matches
-    if student and student.check_password(password):
-        return student
+    if user and user.check_password(password):
+        return user
 
 
 # Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
-    return models.Student.query.get(payload['identity'])
+    return models.User.query.get(payload['identity'])
 
 
 jwt = JWT(app, authenticate, identity)
@@ -50,12 +50,12 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/upload", methods=['POST'])
-def upload():
-    file = request.files['inputFile']
+#@app.route("/upload", methods=['POST'])
+#def upload():
+ #   file = request.files['inputFile']
 
-    newFile = FileContents(name=file.filename, data=file.read())
-    db.session.add(newFile)
-    db.session.commit()
+  #  newFile = FileContents(name=file.filename, data=file.read())
+   # db.session.add(newFile)
+    #db.session.commit()
 
-    return 'Saved ' + file.filename + ' to the database!'
+    #return 'Saved ' + file.filename + ' to the database!'
