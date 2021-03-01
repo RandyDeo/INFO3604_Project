@@ -4,7 +4,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
 
-from models import db, Student, FileContents
+from models import db, User
 
 ''' Begin boilerplate code '''
 
@@ -50,12 +50,12 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/upload", methods=['POST'])
-def upload():
-    file = request.files['inputFile']
+#@app.route("/upload", methods=['POST'])
+#def upload():
+ #   file = request.files['inputFile']
 
-    newFile = FileContents(name=file.filename, data=file.read())
-    db.session.add(newFile)
-    db.session.commit()
+  #  newFile = FileContents(name=file.filename, data=file.read())
+   # db.session.add(newFile)
+    #db.session.commit()
 
-    return 'Saved ' + file.filename + ' to the database!'
+    #return 'Saved ' + file.filename + ' to the database!'
