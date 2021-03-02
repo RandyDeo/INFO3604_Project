@@ -29,7 +29,7 @@ db.create_all(app=app)
 
 def authenticate(sid, password):
     # search for the specified user
-    user = models.User.query.filter_by(id =sid).first()
+    user = models.User.query.filter_by(id=sid).first()
     # if user is found and password matches
     if user and user.check_password(password):
         return user
@@ -47,15 +47,38 @@ jwt = JWT(app, authenticate, identity)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("signup-login.html")
 
 
-#@app.route("/upload", methods=['POST'])
-#def upload():
- #   file = request.files['inputFile']
+@app.route("/signup")
+def signupPage():
+    return render_template("signup- login.html")
 
-  #  newFile = FileContents(name=file.filename, data=file.read())
-   # db.session.add(newFile)
-    #db.session.commit()
 
-    #return 'Saved ' + file.filename + ' to the database!'
+@app.route("/signup", methods=(['POST']))
+def signup():
+    if request.method == 'POST':
+        userData = request.form.to.dict()
+        print(userData)
+        if userData:
+            newUser = User(name=userData["name"], email=userData["email"])
+            newUser.setpassword(userData['pass'])
+            try:
+                db.session.add(newUser)
+                db.session.commit()
+                return render_template("index.partial.html"), 201
+            except IntegrityError:
+                db.session.rollback()
+                return "Looks like you already signed up", 400
+        return 'Nothing submitted', 400
+    return
+
+    # @app.route("/upload", methods=['POST'])
+# def upload():
+#   file = request.files['inputFile']
+
+#  newFile = FileContents(name=file.filename, data=file.read())
+# db.session.add(newFile)
+# db.session.commit()
+
+# return 'Saved ' + file.filename + ' to the database!'
