@@ -15,22 +15,30 @@
   <br>
   <img src="../static/images/mmi_logo.png" alt="Match My Interns" width="210" height="90">
   <div class="form sign-in">
-    <h2 style="color: #006992;">Welcome back,</h2>
-    <br>
-    <h4> Login to manage your account</h4>
-    <label>
-      <!--<span>Email</span>-->
-      <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-        <input type="email" name="email" placeholder ="Enter your email address"/> </div>
-      <!--<input type="email" placeholder ="Enter your email address"/>-->
-   </label>
-    <label>
-      <!--<span>Password</span>-->
-      <div class="wrap-input100 validate-input" data-validate = "Password is required">
-        <input type="password" name="pass" placeholder="Enter your password" /> </div>
-    </label>
-    <button type="button" class="submit">Sign In</button>
-    <p class="forgot-pass">Forgot your password? <b style="color: #006992;"> Reset </b> </p>
+    <div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+                <form class="login100-form validate-form" action="/login" method="POST">
+                  <h2 style="color: #006992;">Welcome back!</h2>
+                   <br>
+                   <h4> Login to manage your account</h4>
+                   <label>
+                  <!--<span>Email</span>-->
+                 <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+                  <input type="email" name="email" placeholder ="Enter your email address"/> </div>
+                   <!--<input type="email" placeholder ="Enter your email address"/>-->
+                  </label>
+                 <label>
+                 <!--<span>Password</span>-->
+                <div class="wrap-input100 validate-input" data-validate = "Password is required">
+                <input type="password" name="pass" placeholder="Enter your password" /> </div>
+               </label>
+              <button type="button" class="submit">Sign In</button>
+              <p class="forgot-pass">Forgot your password? <b style="color: #006992;"> Reset </b> </p>
+                  </form>
+            </div>
+        </div>
+    </div>
 
   </div>
   <div class="sub-cont">
@@ -53,37 +61,63 @@
     <br> <br>
     <br> <br>
     <div class= "style=padding-right: 100px;">
+     <div class="limiter">
+      <div class="container-login100">
+        <div class="wrap-login100">
+        <form class="login100-form validate-form" action="/signup-login.html" method='POST'>
+            <span class="login100-form-title">
+					<h2 style="color: #006992; padding-left: 105px;">Create your Account</h2>
+					</span>
+                     <br>
 
-      <form class="login100-form validate-form" action="/signup" method="POST">
-      <h2 style="color: #006992; padding-left: 105px;">Create your Account</h2>
-      <br>
-      <label>
         <!--<span>Name</span>-->
-        <input type="text" id="name" name="name" placeholder="Enter your name"/>
-      </label>
-      <label>
+            <div class="wrap-input100 validate-input" >
+                <label>
+            <input type="text" id="name" name="name"   placeholder="Enter your name"/>
+                <span class="focus-input100"></span>
+       </label>
+        </div>
+        <label>
         <!--<span>Email</span>-->
         <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-          <input type="email" id="email" name="email" placeholder="Enter your email"/> </div>
-      </label>
-      <label>
+          <input type="text" id="email" name="email" placeholder="Enter your email"/>
+            <span class="focus-input100"></span>
+            </div>
+        </label>
+       <label>
         <!--<span>Occupation</span>-->
-        <input type="text" placeholder="Enter your occupation"/>
+           <div class="wrap-input100 validate-input" >
+        <input type="text" class="input100" id="occupation" name="occupation" placeholder="Enter your occupation"/>
+               <span class="focus-input100"></span>
+           </div>
       </label>
       <label>
         <!--<span>Password</span>-->
         <div class="wrap-input100 validate-input" >
-          <input class="input100"  type="password" id="password" name="pass" placeholder="Enter your password"/> </div>
+          <input class="input100"  type="password" id="password" name="pass" placeholder="Enter your password"/>
+        <span class="focus-input100"></span>
+        </div>
       </label>
       <label>
         <!--<span>Password</span>-->
+           <div class="wrap-input100 validate-input" >
         <input type="password" placeholder="Confirm your password"/>
+               <span class="focus-input100"></span> </div>
       </label>
-      <button type="submit" name ="submit_id" id="btn_id" value="Submit" class="submit" onclick="submitForm()" >Sign Up</button>
+
+            <div class="container-login100-form-btn">
+                <button>
+      <input class="submit" value="submit" type=submit name ="submit_id" id="btn_id" onclick="submitter" />Sign Up</button>
+            </div>
     </form>
+  </div>
+</div>
+     </div>
     </div>
   </div>
 </div>
+
+
 
 <!-- partial -->
   <script  src="../static/js/script.js"></script>
