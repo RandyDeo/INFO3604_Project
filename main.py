@@ -1,5 +1,5 @@
 import json
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
@@ -66,42 +66,53 @@ def signupPage():
 
 @app.route("/signup-login.html", methods=(['POST']))
 def signup():
-    email = request.form.get('email')
-    name = request.form.get('name')
-    occupation = request.form.get('occupation')
-    password = request.form.get('password')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        occupation = request.form.get('occupation')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            new_user = User(name=name, email=email, occupation=occupation)
+            new_user.password = generate_password_hash(password, method='sha256')
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                return render_template("signup-login.html"), 201
+            except IntegrityError:
+                db.session.rollback()
+                return 'Email address already exists', render_template("signup-login.html"), 400
+            return 'Nothing submitted', 400
+        return
 
-    user = User.query.filter_by(email=email).first()  # if this returns a user, then the email already exists in database
 
-    if user:  # if a user is found, we want to redirect back to signup page so user can try again
-        return 'Email address already exists', render_template("signup-login.html"), 400
+# create new user with the form data
+# new_user = new_user.name=["name"], email=user["email"], occupation=user["occupation"])
+# new_user.password = generate_password_hash(password, method='sha256')
 
-    # create new user with the form data
-    new_user = User(name=user("name"), email=user("email"), occupation=user("occupation"))
-    new_user.password = generate_password_hash(password, method='sha256')
-
-    # add the new user to the database
-    db.session.add(new_user)
-    db.session.commit()
-    return render_template("student-homepage.html"), 201
-
+# add the new user to the database
 
 @app.route("/signup-login.html", methods=(['GET', 'POST']))
 def login():
     if request.method == 'GET':
         return render_template("signup-login.html")
+
     elif request.method == 'POST':
-        userData = reqest.form.to.dict()
-        username = userData['name']
-        password = userData['pass']
-        user = User.query.filter_by(name=username).first()
-        if user and user.check_password(password):
-            time = timedelat(hours=1)
-            login_user(user, False, time)
-            return render_template('student-homepage.html'), 200
+        email = request.form.get('email')
+        password = request.form.get('pass')
+
+        user = User.query.filter_by(email=email).first()
         if user is None:
-            return render_template('signup-login.html'), 401
+            return render_template("signup-login.html"), 401
+
+        if user and user.check_password(password):
+            try:
+                login_user(user, remember=True)
+                return render_template("student-homepage.html"), 200
+            except IntegrityError:
+                return 'Email address does not exist', render_template("signup-login.html"), 400
     return "Invalid Login", 401
+
 
 
 @login_manager.unauthorized_handler
