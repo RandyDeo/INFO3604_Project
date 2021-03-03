@@ -74,3 +74,5 @@ return false;
 })
 
 });
+
+/*DUPLICATE THE ROWS IN THE FORM CODE */
