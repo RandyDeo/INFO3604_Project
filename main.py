@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 
-from models import db, User
+from models import db, User, Student
 
 ''' Begin boilerplate code '''
 
@@ -84,7 +84,6 @@ def signup():
             except IntegrityError:
                 db.session.rollback()
                 return 'Email address already exists', render_template("login.html"), 400
-            return 'Nothing submitted', 400
         return
 
 
@@ -115,7 +114,6 @@ def login():
                 return render_template('student-homepage.html'), 200
             except IntegrityError:
                 return 'Email address does not exist', render_template("signup.html"), 400
-
     return
 
 
@@ -139,3 +137,5 @@ def logout():
 # db.session.commit()
 
 # return 'Saved ' + file.filename + ' to the database!'
+
+@app.route("/register", methods=(['POST']))

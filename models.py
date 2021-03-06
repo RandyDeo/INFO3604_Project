@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+
 # Model for User
 class User(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,3 +39,32 @@ class User(db.Model, UserMixin, ):
         return True
 
 
+class Student(db.Model, UserMixin, ):
+    studentID = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    UWI_ID = db.Column(db.Integer, nullable=False)
+    country = db.Column(db.String(120), nullable=False)
+    curr_degree = db.Column(db.String(120), nullable=False)
+    year_of_study = db.Column(db.Integer, nullable=False)
+    credits = db.Column(db.Integer, nullable=False)
+    enrollment = db.Column(db.String(120), nullable=False)
+    transcript = db.Column(db.LargeBinary)
+    resume = db.Column(db.LargeBinary)
+    essay = db.Column(db.LargeBinary)
+
+    def toDict(self):
+        return {
+            "Student ID": self.studentID,
+            "Name": self.name,
+            "Email": self.email,
+            "UWI ID": self.UWI_ID,
+            "Country": self.country,
+            "Current Degree": self.curr_degree,
+            "Year of Study": self.year_of_study,
+            "Credits": self.credits,
+            "Enrollment": self.enrollment,
+            "Transcript": self.transcript,
+            "Resume": self.resume,
+            "Essay": self.essay
+        }
