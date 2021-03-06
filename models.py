@@ -33,4 +33,8 @@ class User(db.Model, UserMixin, ):
     def _repr_(self):
         return '< User Id {}>'.format(self.id)
 
+    @property
+    def is_authenticated(self):
+        return True
+
 

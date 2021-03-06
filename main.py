@@ -9,12 +9,6 @@ from datetime import timedelta
 from models import db, User
 
 ''' Begin boilerplate code '''
-login_manager = LoginManager()
-
-
-@login_manager.user_loader
-def user_loader(email):
-    return User.query.get(email) #review this// may result in error
 
 
 def create_app():
@@ -31,15 +25,22 @@ app = create_app()
 
 app.app_context().push()
 db.create_all(app=app)
+
+login_manager = LoginManager(app)
+
+
+@login_manager.user_loader
+def user_loader(email):
+    return User.query.get(email)  # review this// may result in error
+
+
 ''' End Boilerplate Code '''
 
 ''' Set up JWT here '''
 
 
 def authenticate(email, password):
-    # search for the specified user
     user = models.User.query.filter_by(email=email).first()
-    # if user is found and password matches
     if user and user.check_password(password):
         return user
 
@@ -78,7 +79,7 @@ def signup():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                #login_user(new_user)
+                # login_user(new_user)
                 return render_template("student-homepage.html"), 201
             except IntegrityError:
                 db.session.rollback()
@@ -95,22 +96,26 @@ def signup():
 
 @app.route('/login.html', methods=(['GET', 'POST']))
 def login():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    elif request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if current_user.authenticate(email, password):
-            return redirect(url_for('student-homepage'))
+        if not (current_user == authenticate(email, password)):
+            pass
+        else:
+            return render_template('student-homepage')
 
         user = User.query.filter_by(email=email).first()
         if user and user.check_password_hash(password):
             try:
-                login_user(user, remember=True) #this is an error but line has to be there
+                login_user(user, remember=True)  # this is an error but line has to be there
                 return render_template('student-homepage.html'), 200
             except IntegrityError:
                 return 'Email address does not exist', render_template("signup.html"), 400
-    elif request.method == 'GET':
-        return redirect(url_for('login'))
+
     return
 
 
