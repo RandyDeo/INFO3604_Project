@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\templates\landing-page.html">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\templates\signup-login.html">
           <value>
             <Attribute>

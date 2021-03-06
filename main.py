@@ -13,8 +13,8 @@ login_manager = LoginManager()
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
+def user_loader(email):
+    return User.query.get(email) #review this// may result in error
 
 
 def create_app():
@@ -36,9 +36,9 @@ db.create_all(app=app)
 ''' Set up JWT here '''
 
 
-def authenticate(sid, password):
+def authenticate(email, password):
     # search for the specified user
-    user = models.User.query.filter_by(id=sid).first()
+    user = models.User.query.filter_by(email=email).first()
     # if user is found and password matches
     if user and user.check_password(password):
         return user
@@ -59,12 +59,12 @@ def home():
     return render_template("landing-page.html")
 
 
-@app.route("/signup-login.html")
+@app.route("/signup.html")
 def signupPage():
-    return render_template("signup-login.html")
+    return render_template("signup.html")
 
 
-@app.route("/signup-login.html", methods=(['POST']))
+@app.route('/signup', methods=(['POST']))
 def signup():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -78,10 +78,11 @@ def signup():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                return render_template("signup-login.html"), 201
+                #login_user(new_user)
+                return render_template("student-homepage.html"), 201
             except IntegrityError:
                 db.session.rollback()
-                return 'Email address already exists', render_template("signup-login.html"), 400
+                return 'Email address already exists', render_template("login.html"), 400
             return 'Nothing submitted', 400
         return
 
@@ -92,32 +93,30 @@ def signup():
 
 # add the new user to the database
 
-@app.route("/signup-login.html", methods=(['GET', 'POST']))
+@app.route('/login.html', methods=(['GET', 'POST']))
 def login():
-    if request.method == 'GET':
-        return render_template("signup-login.html")
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('pass')
+        password = request.form.get('password')
+
+        if current_user.authenticate(email, password):
+            return redirect(url_for('student-homepage'))
 
         user = User.query.filter_by(email=email).first()
-        if user is None:
-            return render_template("signup-login.html"), 401
-
-        if user and user.check_password(password):
+        if user and user.check_password_hash(password):
             try:
-                login_user(user, remember=True)
-                return render_template("student-homepage.html"), 200
+                login_user(user, remember=True) #this is an error but line has to be there
+                return render_template('student-homepage.html'), 200
             except IntegrityError:
-                return 'Email address does not exist', render_template("signup-login.html"), 400
-    return "Invalid Login", 401
-
+                return 'Email address does not exist', render_template("signup.html"), 400
+    elif request.method == 'GET':
+        return redirect(url_for('login'))
+    return
 
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return render_template('signup-login.html')
+    return render_template('signup.html')
 
 
 @app.route("/logout", methods=(['GET']))
