@@ -60,12 +60,12 @@ def home():
     return render_template("landing-page.html")
 
 
-@app.route("/signup.html")
+@app.route("/signup")
 def signupPage():
     return render_template("signup.html")
 
 
-@app.route('/signup', methods=(['POST']))
+@app.route("/signup", methods=(['POST']))
 def signup():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -80,7 +80,8 @@ def signup():
                 db.session.add(new_user)
                 db.session.commit()
                 # login_user(new_user)
-                return render_template("student-homepage.html"), 201
+                #return render_template("student-homepage.html"), 201
+                return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
                 return 'Email address already exists', render_template("login.html"), 400
@@ -92,8 +93,31 @@ def signup():
 # new_user.password = generate_password_hash(password, method='sha256')
 
 # add the new user to the database
+#COMMENTING THIS OUT BECAUSE YEAH NO
+#@app.route("/login", methods=(['GET', 'POST']))
+#def login():
+    #if request.method == 'GET':
+        #return render_template('login.html')
 
-@app.route('/login.html', methods=(['GET', 'POST']))
+    #elif request.method == 'POST':
+        #email = request.form.get('email')
+        #password = request.form.get('password')
+
+        #if not (current_user == authenticate(email, password)):
+            #pass
+        #else:
+            #return render_template('student-homepage')
+
+        #user = User.query.filter_by(email=email).first()
+        #if user and user.check_password_hash(password):
+            #try:
+                #login_user(user, remember=True)  # this is an error but line has to be there
+                #return render_template('student-homepage.html'), 200
+            #except IntegrityError:
+                #return 'Email address does not exist', render_template("signup.html"), 400
+    #return render_template('student-homepage.html')
+
+@app.route ("/login", methods =(['GET', 'POST']))
 def login():
     if request.method == 'GET':
         return render_template('login.html')
@@ -102,20 +126,22 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if not (current_user == authenticate(email, password)):
-            pass
-        else:
-            return render_template('student-homepage')
-
         user = User.query.filter_by(email=email).first()
-        if user and user.check_password_hash(password):
-            try:
-                login_user(user, remember=True)  # this is an error but line has to be there
-                return render_template('student-homepage.html'), 200
-            except IntegrityError:
-                return 'Email address does not exist', render_template("signup.html"), 400
-    return
+        if user and user.check_password(password):
+            time = timedelta(hours=1)
+            login_user(user, False, time)
+            return studentHome(), 200
+        if user is None:
+            return "Please create an account!"
+            #return render_template('signup.html'), 401
+        return "Invalid login", 401
 
+    #return render_template("student-homepage.html")
+
+@app.route("/studentHome", methods=(['GET']))
+@login_required
+def studentHome():
+    return render_template("student-homepage.html")
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -138,4 +164,4 @@ def logout():
 
 # return 'Saved ' + file.filename + ' to the database!'
 
-@app.route("/register", methods=(['POST']))
+#@app.route("/register", methods=(['POST']))
