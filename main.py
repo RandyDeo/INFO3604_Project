@@ -143,10 +143,30 @@ def login():
 def studentHome():
     return render_template("student-homepage.html")
 
+@app.route("/businessHome", methods=(['GET']))
+#@login_required
+def businessHome():
+    return render_template("business-homepage.html")
+
+@app.route("/studentRegistration")
+def studentRegistration():
+    return render_template("student-registration.html")
+
+@app.route ("/displayStudentForm")
+def displayStudentForm():
+    return render_template("student-registration-form.html")
+
+@app.route("/businessRegistration")
+def businessRegistration():
+    return render_template("business-registration.html")
+
+@app.route ("/displayBusinessForm")
+def displayBusinessForm():
+    return render_template("business-registration-form.html")
+
 @login_manager.unauthorized_handler
 def unauthorized():
     return render_template('signup.html')
-
 
 @app.route("/logout", methods=(['GET']))
 @login_required
