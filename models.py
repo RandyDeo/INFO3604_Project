@@ -43,7 +43,7 @@ class Student(db.Model, UserMixin, ):
     studentID = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    UWI_ID = db.Column(db.Integer, nullable=False)
+    uwiid = db.Column(db.Integer, unique=True, nullable=False)
     country = db.Column(db.String(120), nullable=False)
     curr_degree = db.Column(db.String(120), nullable=False)
     year_of_study = db.Column(db.Integer, nullable=False)
@@ -58,7 +58,7 @@ class Student(db.Model, UserMixin, ):
             "Student ID": self.studentID,
             "Name": self.name,
             "Email": self.email,
-            "UWI ID": self.UWI_ID,
+            "uwiid": self.uwiid,
             "Country": self.country,
             "Current Degree": self.curr_degree,
             "Year of Study": self.year_of_study,
