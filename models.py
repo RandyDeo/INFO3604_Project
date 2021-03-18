@@ -68,3 +68,45 @@ class Student(db.Model, UserMixin, ):
             "Resume": self.resume,
             "Essay": self.essay
         }
+
+
+class Business(db.Model, UserMixin, ):
+    businessID = db.Column(db.Integer, primary_key=True)
+    bname = db.Column(db.String(120), nullable=False)
+    num_interns = db.Column(db.Integer, nullable= False)
+    duration = db.Column(db.Integer, nullable=False)
+    credits = db.Column(db.Integer, nullable=False)
+    stipend = db.Column(db.Integer, nullable=False)
+    tech_skills = db.Column(db.String(300), nullable=False)
+    soft_skills = db.Column(db.String(300), nullable=False)
+
+    def toDict(self):
+        return {
+            "Business ID": self.businessID,
+            "Name": self.bname,
+            "Number of Interns": self.num_interns,
+            "Duration": self.duration,
+            "credits": self.credits,
+            "stipend": self.stipend,
+            "Technical Skills": self.tech_skills,
+            "Soft Skills": self.soft_skills
+
+        }
+
+
+class Internship(db.Model, UserMixin, ):
+    internshipID = db.Column(db.Integer, primary_key=True)
+    proj_name = db.Column(db.String(120), nullable=False)
+    proj_descript = db.Column(db.String(300), nullable=False)
+    activities = db.Column(db.String(300), nullable=False)
+    business_ID = db.Column(db.Integer, db.ForeignKey('business.businessID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "Internship ID": self.businessID,
+            "Project Name": self.proj_name,
+            "Project Description": self.proj_descript,
+            "Activities": self.activities,
+            "Business ID": self.business_ID
+
+        }

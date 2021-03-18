@@ -23,7 +23,7 @@
             <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                 <h2 id="heading">Register Your Business for the Internship Course</h2>
                 <p>Fill all form field to go to next step</p>
-                <form id="msform">
+                <form id="msform" action="/displayBusinessForm", method='POST'>
                     <!-- progressbar -->
                     <ul id="progressbar">
                         <li class="active" id="account"><strong>Company Details</strong></li>
@@ -44,18 +44,18 @@
                                     <h2 class="steps">Step 1 - 4</h2>
                                 </div>
                             </div>
-                            <label class="fieldlabels">Company Name: *</label> <input type="text" name="company_name" placeholder="Company Name" />
-                            <label class="fieldlabels">Number of Interns Required: *</label> <input type="number" name="no_of_interns" placeholder="Number of Interns Required" />
-                            <label class="fieldlabels">Duration: </label> <input type="text" name="duration" placeholder="Duration" />
+                            <label class="fieldlabels">Company Name: *</label> <input type="text" id="bname" name="company_name" placeholder="Company Name" />
+                            <label class="fieldlabels">Number of Interns Required: *</label> <input type="number" id="num_interns" name="no_of_interns" placeholder="Number of Interns Required" />
+                            <label class="fieldlabels">Duration: </label> <input type="text" name="duration" id="duration" placeholder="Duration" />
                             <!--<label class="fieldlabels">Credits: *</label> <input type="number" name="credits" placeholder="Credits" /> -->
                             <label class="fieldlabels"> Credits: </label>
-                            <select name="credits">
+                            <select name="credits" id="credits">
                                 <option value=""> </option>
                                 <option value ="3"> 3 </option>
                                 <option value ="6"> 6 </option>
                             </select>
                             <br> <br>
-                            <label class="fieldlabels">Stipend: </label> <input type="text" name="stipend" placeholder="Stipend" />
+                            <label class="fieldlabels">Stipend: </label> <input type="text" name="stipend" id="stipend" placeholder="Stipend" />
                         </div> <input type="button" name="next" class="next action-button" value="Next" />
                     </fieldset>
                     <fieldset>
@@ -67,8 +67,8 @@
                                 <div class="col-5">
                                     <h2 class="steps">Step 2 - 4</h2>
                                 </div>
-                            </div> <label class="fieldlabels">Technical Skills: *</label> <input type="text" name="technical_skills" placeholder="Technical Skills" />
-                            <label class="fieldlabels">Soft Skills: *</label> <input type="text" name="soft_skills" placeholder="Soft Skills" />
+                            </div> <label class="fieldlabels">Technical Skills: *</label> <input type="text" name="technical_skills" id="tech_skills" placeholder="Technical Skills" />
+                            <label class="fieldlabels">Soft Skills: *</label> <input type="text" name="soft_skills" id= "soft_skills" placeholder="Soft Skills" />
 
                         </div> <input type="button" name="next" class="next action-button" value="Next" /> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                     </fieldset>
@@ -82,13 +82,14 @@
                                     <h2 class="steps">Step 3 - 4</h2>
                                 </div>
                             </div>
-                            <label class="fieldlabels">Project Name: *</label> <input type="text" name="project_name" placeholder="Project Name" />
-                            <label class="fieldlabels">Project Description: *</label> <input type="text" name="project_description" placeholder="Project Description" />
-                            <label class="fieldlabels">Assigned Activities: *</label> <input type="text" name="project_activities" placeholder="Project Activities" />
+                            <label class="fieldlabels">Project Name: *</label> <input type="text" name="project_name" id="proj_name" placeholder="Project Name" />
+                            <label class="fieldlabels">Project Description: *</label> <input type="text" name="project_description" id="proj_descript" placeholder="Project Description" />
+                            <label class="fieldlabels">Assigned Activities: *</label> <input type="text" name="project_activities" id="activities" placeholder="Project Activities" />
 
                             <a href="" style="font-size:18px;width:33%; color: #006992;" id="addMore2" title="Add a New Project"><i class='fas fa-plus'> Add a New Project </i></a>
 
-                        </div> <input type="button" name="next" class="next action-button" value="Submit" /> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                        </div> <input type="button" name="next" class="next action-button" value="Submit" />
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                     </fieldset>
                     <fieldset>
                         <div class="form-card">

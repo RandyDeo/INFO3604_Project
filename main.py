@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 
-from models import db, User, Student
+from models import db, User, Student, Business, Internship
 
 ''' Begin boilerplate code '''
 
@@ -130,7 +130,10 @@ def login():
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            return studentHome(), 200
+            if user.occupation == "Business":
+                return businessHome(),200
+            elif user.occupation == "Student":
+                return studentHome(), 200
         if user is None:
             return "Please create an account!"
             # return render_template('signup.html'), 401
@@ -187,14 +190,41 @@ def displayStudentForm():
     return
 
 
-@app.route("/businessRegistration")
+@app.route("/businessRegistration", methods=(['GET', 'POST']))
 def businessRegistration():
-    return render_template("business-registration.html")
+    if request.method == 'GET':
+        return render_template("business-registration.html")
 
+    elif request.method == 'POST':
+        bname = request.form.get('bname')
+        num_interns = request.form.get('num_interns')
+        duration = request.form.get('duration')
+        stipend = request.form.get('stipend')
+        tech_skills = request.form.get('tech_skills')
+        soft_skills = request.form.get('soft_skills')
+        proj_name = request.form.get('proj_name')
+        proj_descript = request.form.get('proj_descript')
+        activities = request.form.get('activities')
+        business = Business.query.filter_by(businessID=businessID).first()
+        internship = Internship.query.filter_by(internshipID=intershipID).first()
+        if business is None:
+            new_business = Business(bname=bname, num_interns=num_interns, duration=duration, stipemd=stipend,
+                                    tech_skills=tech_skills, soft_skills=soft_skills)
+        if internship is None:
+            new_internship = Internship(proj_name=proj_name, proj_descrip=proj_descript, activities=activities)
+            try:
+                db.session.add(new_business)
+                db.session.add(new_internship)
+                db.session.commit()
+                return render_template('business-homepage.html')
+            except IntegrityError:
+                return 'Application does not exist', render_template("business-registration.html"), 400
 
 @app.route("/displayBusinessForm")
 def displayBusinessForm():
-    return render_template("business-registration-form.html")
+    if request.method == 'GET':
+        return render_template('business-registration-form.html')
+
 
 
 @login_manager.unauthorized_handler

@@ -1,4 +1,4 @@
-from main import db, User, Student, app
+from main import db, User, Student, Business, Internship, app
 import csv
 
 db.create_all(app=app)
@@ -10,3 +10,4 @@ with open("database.csv", mode="w") as database:
 
     db.session.commit()
     print("Database Initialized!")
+
