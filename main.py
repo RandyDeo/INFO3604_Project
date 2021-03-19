@@ -131,7 +131,7 @@ def login():
             time = timedelta(hours=1)
             login_user(user, False, time)
             if user.occupation == "Business":
-                return businessHome(),200
+                return businessHome(), 200
             elif user.occupation == "Student":
                 return studentHome(), 200
         if user is None:
@@ -178,9 +178,9 @@ def displayStudentForm():
         essay = request.form.get('essay')
         student = Student.query.filter_by(uwiid=uwiid).first()
         if student is None:
-            new_student = Student(name=name, email=email, uwiid=uwiid, country=country, curr_degree=curr_degree,
-                                  year_of_study=year_of_study, credits=credit, enrollment=enrollment,
-                                  transcript=transcript, resume=resume, essay=essay)
+            new_student = Student(enrollment=enrollment, transcript=transcript, curr_degree=curr_degree, credits=credit,
+                                  resume=resume, essay=essay, name=name, country=country, uwiid=uwiid,
+                                  year_of_study=year_of_study, email=email)
             try:
                 db.session.add(new_student)
                 db.session.commit()
@@ -190,41 +190,49 @@ def displayStudentForm():
     return
 
 
-@app.route("/businessRegistration", methods=(['GET', 'POST']))
+@app.route("/businessRegistration")
 def businessRegistration():
+    return render_template("business-registration.html")
+
+
+@app.route("/displayBusinessForm", methods=(['GET', 'POST']))
+def displayBusinessForm():
     if request.method == 'GET':
-        return render_template("business-registration.html")
+        return render_template('business-registration-form.html')
 
     elif request.method == 'POST':
         bname = request.form.get('bname')
         num_interns = request.form.get('num_interns')
         duration = request.form.get('duration')
+        credits = request.form.get('credits')
         stipend = request.form.get('stipend')
         tech_skills = request.form.get('tech_skills')
         soft_skills = request.form.get('soft_skills')
-        proj_name = request.form.get('proj_name')
-        proj_descript = request.form.get('proj_descript')
-        activities = request.form.get('activities')
-        business = Business.query.filter_by(businessID=businessID).first()
-        internship = Internship.query.filter_by(internshipID=intershipID).first()
+
+        business = Business.query.filter_by(bname=bname).first()
+
         if business is None:
-            new_business = Business(bname=bname, num_interns=num_interns, duration=duration, stipemd=stipend,
-                                    tech_skills=tech_skills, soft_skills=soft_skills)
-        if internship is None:
-            new_internship = Internship(proj_name=proj_name, proj_descrip=proj_descript, activities=activities)
+            new_business = Business(bname=bname, num_interns=num_interns, duration=duration, stipend=stipend,
+                                    credits=credits, tech_skills=tech_skills, soft_skills=soft_skills)
+
+            db.session.add(new_business)
+            db.session.commit()
+
+            proj_name = request.form.get('proj_name')
+            proj_descript = request.form.get('proj_descript')
+            activities = request.form.get('activities')
+            internship = Internship.query.filter_by(proj_name=proj_name).first()
+
+            if internship is None:
+                new_internship = Internship(proj_name=proj_name, proj_descript=proj_descript, activities=activities,
+                                            business_ID=new_business.businessID)
             try:
-                db.session.add(new_business)
                 db.session.add(new_internship)
                 db.session.commit()
                 return render_template('business-homepage.html')
             except IntegrityError:
                 return 'Application does not exist', render_template("business-registration.html"), 400
-
-@app.route("/displayBusinessForm")
-def displayBusinessForm():
-    if request.method == 'GET':
-        return render_template('business-registration-form.html')
-
+    return
 
 
 @login_manager.unauthorized_handler

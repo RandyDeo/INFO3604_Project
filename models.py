@@ -49,9 +49,9 @@ class Student(db.Model, UserMixin, ):
     year_of_study = db.Column(db.Integer, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
     enrollment = db.Column(db.String(120), nullable=False)
-    transcript = db.Column(db.LargeBinary)
-    resume = db.Column(db.LargeBinary)
-    essay = db.Column(db.LargeBinary)
+    transcript = db.Column(db.LargeBinary, nullable=False)
+    resume = db.Column(db.LargeBinary, nullable=False)
+    essay = db.Column(db.LargeBinary, nullable=False)
 
     def toDict(self):
         return {
@@ -73,7 +73,7 @@ class Student(db.Model, UserMixin, ):
 class Business(db.Model, UserMixin, ):
     businessID = db.Column(db.Integer, primary_key=True)
     bname = db.Column(db.String(120), nullable=False)
-    num_interns = db.Column(db.Integer, nullable= False)
+    num_interns = db.Column(db.Integer, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
     stipend = db.Column(db.Integer, nullable=False)
