@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 
-from models import db, User, Student, Business, Internship
+from models import db, User, Student, Business, Internship, FileContents
 
 ''' Begin boilerplate code '''
 
@@ -173,16 +173,26 @@ def displayStudentForm():
         year_of_study = request.form.get('yos')
         credit = request.form.get('credits')
         enrollment = request.form.get('enrollment')
-        transcript = request.form.get('transcript')
-        resume = request.form.get('resume')
-        essay = request.form.get('essay')
+
         student = Student.query.filter_by(uwiid=uwiid).first()
         if student is None:
-            new_student = Student(enrollment=enrollment, transcript=transcript, curr_degree=curr_degree, credits=credit,
-                                  resume=resume, essay=essay, name=name, country=country, uwiid=uwiid,
-                                  year_of_study=year_of_study, email=email)
+            new_student = Student(enrollment=enrollment, curr_degree=curr_degree, credits=credit, name=name,
+                                  country=country, uwiid=uwiid, year_of_study=year_of_study, email=email)
+
+            db.session.add(new_student)
+            db.session.commit()
+
+            transcript = request.form.get('transcript')
+            resume = request.form.get('resume')
+            essay = request.form.get('essay')
+            id = new_student.uwiid
+            files = FileContents.query.filter_by(student_uwiid=uwiid).first()
+
+            if files is None:
+                new_files = FileContents(transcript=transcript, resume=resume, essay=essay, student_uwiid=id)
+
             try:
-                db.session.add(new_student)
+                db.session.add(new_files)
                 db.session.commit()
                 return render_template('student-homepage.html')
             except IntegrityError:

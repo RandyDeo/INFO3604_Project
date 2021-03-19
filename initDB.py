@@ -1,4 +1,4 @@
-from main import db, User, Student, Business, Internship, app
+from main import db, User, Student, Business, Internship, FileContents, app
 import csv
 
 db.create_all(app=app)

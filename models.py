@@ -49,9 +49,6 @@ class Student(db.Model, UserMixin, ):
     year_of_study = db.Column(db.Integer, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
     enrollment = db.Column(db.String(120), nullable=False)
-    transcript = db.Column(db.LargeBinary, nullable=False)
-    resume = db.Column(db.LargeBinary, nullable=False)
-    essay = db.Column(db.LargeBinary, nullable=False)
 
     def toDict(self):
         return {
@@ -63,11 +60,16 @@ class Student(db.Model, UserMixin, ):
             "Current Degree": self.curr_degree,
             "Year of Study": self.year_of_study,
             "Credits": self.credits,
-            "Enrollment": self.enrollment,
-            "Transcript": self.transcript,
-            "Resume": self.resume,
-            "Essay": self.essay
+            "Enrollment": self.enrollment
         }
+
+
+class FileContents(db.Model):
+    files_id = db.Column(db.Integer, primary_key=True)
+    transcript = db.Column(db.LargeBinary(), nullable=False)
+    resume = db.Column(db.LargeBinary(), nullable=False)
+    essay = db.Column(db.LargeBinary(), nullable=False)
+    student_uwiid = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
 
 
 class Business(db.Model, UserMixin, ):
