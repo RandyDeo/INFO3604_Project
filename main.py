@@ -132,8 +132,10 @@ def login():
             login_user(user, False, time)
             if user.occupation == "Business":
                 return businessHome(), 200
-            elif user.occupation == "Student":
+            if user.occupation == "Student":
                 return studentHome(), 200
+            elif user.occupation == "DCIT":
+                return dcitHome(), 200
         if user is None:
             return "Please create an account!"
             # return render_template('signup.html'), 401
@@ -152,6 +154,12 @@ def studentHome():
 # @login_required
 def businessHome():
     return render_template("business-homepage.html")
+
+
+@app.route("/dcitHome", methods=(['GET']))
+@login_required
+def dcitHome():
+    return render_template("DCIT-homepage.html")
 
 
 @app.route("/studentRegistration")
@@ -182,19 +190,23 @@ def displayStudentForm():
             db.session.add(new_student)
             db.session.commit()
 
-            transcript = request.form.get('transcript')
-            resume = request.form.get('resume')
-            essay = request.form.get('essay')
-            id = new_student.uwiid
-            files = FileContents.query.filter_by(student_uwiid=uwiid).first()
+            transcript = request.files['transcript']
+            resume = request.files['resume']
+            essay = request.files['essay']
+            sid = new_student.uwiid
+            file = FileContents.query.filter_by(student_uwiid=uwiid).first()
 
-            if files is None:
-                new_files = FileContents(transcript=transcript, resume=resume, essay=essay, student_uwiid=id)
+            if file is None:
+                new_files = FileContents(transcript=transcript.read(), resume=resume.read(), essay=essay.read(),
+                                         student_uwiid=sid)
+                transcript.filename = (str(sid)+"_transcript.pdf")
+                resume.filename = (str(sid) + "_resume.pdf")
+                essay.filename = (str(sid) + "_essay.pdf")
 
             try:
                 db.session.add(new_files)
                 db.session.commit()
-                return render_template('student-homepage.html')
+                return render_template('student-homepage.html'), 200
             except IntegrityError:
                 return 'Application does not exist', render_template("student-registration.html"), 400
     return
