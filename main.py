@@ -6,6 +6,8 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 
+import os
+
 from models import db, User, Student, Business, Internship, FileContents
 
 ''' Begin boilerplate code '''
@@ -71,7 +73,7 @@ def signup():
         email = request.form.get('email')
         name = request.form.get('name')
         occupation = request.form.get('occupation')
-        password = request.form.get('password')
+        password = request.form.get('pass')
         user = User.query.filter_by(email=email).first()
         if user is None:
             new_user = User(name=name, email=email, occupation=occupation)
@@ -124,13 +126,13 @@ def login():
 
     elif request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('password')
+        password = request.form.get('pass')
 
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            if user.occupation == "Business":
+            if user.occupation == "Business" :
                 return businessHome(), 200
             if user.occupation == "Student":
                 return studentHome(), 200
@@ -182,34 +184,28 @@ def displayStudentForm():
         credit = request.form.get('credits')
         enrollment = request.form.get('enrollment')
 
+        transcript = request.files['transcript']
+        resume = request.files['resume']
+        essay = request.files['essay']
+
         student = Student.query.filter_by(uwiid=uwiid).first()
-        if student is None:
-            new_student = Student(enrollment=enrollment, curr_degree=curr_degree, credits=credit, name=name,
-                                  country=country, uwiid=uwiid, year_of_study=year_of_study, email=email)
 
-            db.session.add(new_student)
-            db.session.commit()
+        transcript.save(os.path.join("uploads", uwiid + "_transcript.pdf"))
+        resume.save(os.path.join("uploads", uwiid + "_resume.pdf"))
+        essay.save(os.path.join("uploads", uwiid + "_essay.pdf"))
 
-            transcript = request.files['transcript']
-            resume = request.files['resume']
-            essay = request.files['essay']
-            sid = new_student.uwiid
-            file = FileContents.query.filter_by(student_uwiid=uwiid).first()
-
-            if file is None:
-                new_files = FileContents(transcript=transcript.read(), resume=resume.read(), essay=essay.read(),
-                                         student_uwiid=sid)
-                transcript.filename = (str(sid)+"_transcript.pdf")
-                resume.filename = (str(sid) + "_resume.pdf")
-                essay.filename = (str(sid) + "_essay.pdf")
-
+        if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
+            new_student = Student(name=name, email=email, uwiid=uwiid, country=country,
+                                  year_of_study=year_of_study, credits=credit, enrollment=enrollment,
+                                  curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
+                                  resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"))
             try:
-                db.session.add(new_files)
+                db.session.add(new_student)
                 db.session.commit()
-                return render_template('student-homepage.html'), 200
+                return render_template('student-homepage.html')
             except IntegrityError:
                 return 'Application does not exist', render_template("student-registration.html"), 400
-    return
+        return
 
 
 @app.route("/businessRegistration")

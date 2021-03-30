@@ -4,7 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-
 # Model for User
 class User(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,6 +49,10 @@ class Student(db.Model, UserMixin, ):
     credits = db.Column(db.Integer, nullable=False)
     enrollment = db.Column(db.String(120), nullable=False)
 
+    transcript = db.Column(db.String(120), nullable=False)
+    resume = db.Column(db.String(120), nullable=False)
+    essay = db.Column(db.String(120), nullable=False)
+
     def toDict(self):
         return {
             "Student ID": self.studentID,
@@ -60,7 +63,10 @@ class Student(db.Model, UserMixin, ):
             "Current Degree": self.curr_degree,
             "Year of Study": self.year_of_study,
             "Credits": self.credits,
-            "Enrollment": self.enrollment
+            "Enrollment": self.enrollment,
+            "Transcript": self.transcript,
+            "Resume": self.resume,
+            "Essay": self.essay
         }
 
 
