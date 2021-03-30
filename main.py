@@ -187,18 +187,22 @@ def displayStudentForm():
         transcript = request.files['transcript']
         resume = request.files['resume']
         essay = request.files['essay']
+        photo = request.files['photo']
 
         student = Student.query.filter_by(uwiid=uwiid).first()
 
         transcript.save(os.path.join("uploads", uwiid + "_transcript.pdf"))
         resume.save(os.path.join("uploads", uwiid + "_resume.pdf"))
         essay.save(os.path.join("uploads", uwiid + "_essay.pdf"))
+        photo.save(os.path.join("uploads", uwiid + "_photo.pdf"))
 
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
             new_student = Student(name=name, email=email, uwiid=uwiid, country=country,
                                   year_of_study=year_of_study, credits=credit, enrollment=enrollment,
                                   curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
-                                  resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"))
+                                  resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
+                                  photo=(uwiid + "_essay.pdf"))
+
             try:
                 db.session.add(new_student)
                 db.session.commit()
@@ -224,14 +228,16 @@ def displayBusinessForm():
         duration = request.form.get('duration')
         credits = request.form.get('credits')
         stipend = request.form.get('stipend')
-        tech_skills = request.form.get('tech_skills')
+        lang = request.form.get('lang')
+        design = request.form.get('design')
+        dbms = request.form.get('dbms')
         soft_skills = request.form.get('soft_skills')
 
         business = Business.query.filter_by(bname=bname).first()
 
         if business is None:
             new_business = Business(bname=bname, num_interns=num_interns, duration=duration, stipend=stipend,
-                                    credits=credits, tech_skills=tech_skills, soft_skills=soft_skills)
+                                    credits=credits, language=lang, design=design, dbms=dbms, soft_skills=soft_skills)
 
             db.session.add(new_business)
             db.session.commit()
