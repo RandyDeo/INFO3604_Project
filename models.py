@@ -52,6 +52,7 @@ class Student(db.Model, UserMixin, ):
     transcript = db.Column(db.String(120), nullable=False)
     resume = db.Column(db.String(120), nullable=False)
     essay = db.Column(db.String(120), nullable=False)
+    photo = db.Column(db.String(120), nullable=False)
 
     def toDict(self):
         return {
@@ -66,7 +67,8 @@ class Student(db.Model, UserMixin, ):
             "Enrollment": self.enrollment,
             "Transcript": self.transcript,
             "Resume": self.resume,
-            "Essay": self.essay
+            "Essay": self.essay,
+            "Photo": self.photo
         }
 
 
@@ -85,7 +87,9 @@ class Business(db.Model, UserMixin, ):
     duration = db.Column(db.Integer, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
     stipend = db.Column(db.Integer, nullable=False)
-    tech_skills = db.Column(db.String(300), nullable=False)
+    language = db.Column(db.String(300), nullable=False)
+    design = db.Column(db.String(300), nullable=False)
+    dbms = db.Column(db.String(300), nullable=False)
     soft_skills = db.Column(db.String(300), nullable=False)
 
     def toDict(self):
@@ -94,9 +98,11 @@ class Business(db.Model, UserMixin, ):
             "Name": self.bname,
             "Number of Interns": self.num_interns,
             "Duration": self.duration,
-            "credits": self.credits,
-            "stipend": self.stipend,
-            "Technical Skills": self.tech_skills,
+            "Credits": self.credits,
+            "Stipend": self.stipend,
+            "Languages Required": self.language,
+            "Design knowledge": self.design,
+            "Database Management Systems": self.dbms,
             "Soft Skills": self.soft_skills
 
         }
