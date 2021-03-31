@@ -301,7 +301,7 @@ class Students:
             mylist = list(dict.fromkeys(mylist))
             return mylist
 
-        def listing(self, arg):
+        def compare(self, arg):
             list_length = len(arg)
 
             design = []
@@ -393,11 +393,11 @@ class Students:
         print('TechSkills:', self.tech.language, self.tech.dbms, self.tech.design)
 
 
-courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]
+courselst = ["COMP 2605", "COMP 3606", "INFO 3611"] # this is changing to course list from AJAX to compare
 outer = Students()
 outer.tech.course_list = courselst
 print('Name:', outer.studentId)
-outer = outer.tech.listing(courselst)
+outer = outer.tech.compare(courselst)
 print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 # outer.show()
 
