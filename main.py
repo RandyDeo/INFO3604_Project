@@ -152,16 +152,37 @@ def studentHome():
     return render_template("student-homepage.html")
 
 
-@app.route("/businessHome", methods=(['GET']))
-# @login_required
-def businessHome():
-    return render_template("business-homepage.html")
-
-
+#DCIT ROUTES
+#DCIT homepage route
 @app.route("/dcitHome", methods=(['GET']))
 @login_required
 def dcitHome():
-    return render_template("DCIT-homepage.html")
+    return render_template("dcit-homepage.html")
+
+#DCIT deadlines route
+@app.route("/deadlines", methods=(['GET']))
+@login_required
+def deadlines():
+    return render_template("dcit-deadlines.html")
+
+#DCIT student profiles route
+@app.route("/dcitStudentProfiles", methods=(['GET']))
+@login_required
+def dcitStudentProfiles():
+    return render_template("dcit-studentprofiles.html")
+
+#DCIT weekly reports route
+@app.route("/dcitWeeklyReports", methods=(['GET']))
+@login_required
+def dcitWeeklyReports():
+    return render_template("dcit-weeklyreports.html")
+
+#DCIT company list route
+@app.route("/dcitCompanyList", methods=(['GET']))
+@login_required
+def dcitCompanyList():
+    return render_template("dcit-companylist.html")
+
 
 
 @app.route("/studentRegistration")
@@ -211,6 +232,11 @@ def displayStudentForm():
                 return 'Application does not exist', render_template("student-registration.html"), 400
         return
 
+
+@app.route("/businessHome", methods=(['GET']))
+# @login_required
+def businessHome():
+    return render_template("business-homepage.html")
 
 @app.route("/businessRegistration")
 def businessRegistration():
