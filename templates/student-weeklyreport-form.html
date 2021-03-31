@@ -2,33 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <title>MMI Business Registration Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MMI Student Weekly Status Report </title>
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet'>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
     <link rel="stylesheet" href="../static/css/form.css">
-
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
     <script type='text/javascript' src="../static/js/form.js"></script>
 </head>
 
-
 <body oncontextmenu='return false' class='snippet-body'>
-
     <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
             <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
-                <h2 id="heading">Register Your Business for the Internship Course</h2>
+                <h2 id="heading">Fill out the Weekly Status Report</h2>
                 <p>Please fill out all the form fields to go to the next step</p>
                 <form id="msform" action="/displayBusinessForm" method='POST'>
                     <!-- progressbar -->
                     <ul id="progressbar">
-                        <li class="active" id="account"><strong>Company Details</strong></li>
-                        <li id="personal"><strong>Skills Required</strong></li>
-                        <li id="payment"><strong>Project Details</strong></li>
+                        <li class="active" id="account"><strong>Project Details</strong></li>
+                        <li id="personal"><strong>Risks/Issues List</strong></li>
+                        <li id="payment"><strong>Tasks in Progress/Completed Tasks</strong></li>
+                        <li id="payment"><strong>Upcoming Tasks in the Next Iteration</strong></li>
                         <li id="confirm"><strong>Finish</strong></li>
                     </ul>
                     <div class="progress">
@@ -38,34 +35,27 @@
                         <div class="form-card">
                             <div class="row">
                                 <div class="col-7">
-                                    <h2 class="fs-title">Company Details:</h2>
+                                    <h2 class="fs-title">Project Details:</h2>
                                 </div>
                                 <div class="col-5">
-                                    <h2 class="steps">Step 1 - 4</h2>
+                                    <h2 class="steps">Step 1 - 5</h2>
                                 </div>
                             </div>
-                            <label class="fieldlabels">Company Name: *</label> <input type="text" id="bname" name="bname" placeholder="Company Name" />
-                            <label class="fieldlabels">Number of Interns Required: *</label> <input type="number" id="num_interns" name="num_interns" placeholder="Number of Interns Required" />
-                            <label class="fieldlabels">Duration: </label> <input type="text" name="duration" id="duration" placeholder="Duration" />
-                            <!--<label class="fieldlabels">Credits: *</label> <input type="number" name="credits" placeholder="Credits" /> -->
-                            <label class="fieldlabels"> Credits: </label>
-                            <select name="credits" id="credits">
-                                <option value=""> </option>
-                                <option value ="3"> 3 </option>
-                                <option value ="6"> 6 </option>
-                            </select>
-                            <br> <br>
-                            <label class="fieldlabels">Stipend: </label> <input type="text" name="stipend" id="stipend" placeholder="Stipend" />
+                            <label class="fieldlabels">Project Name: *</label> <input type="text" id="pname" name="pname" placeholder="Project Name" />
+                            <label class="fieldlabels">Date: </label> <input type="date" id="date" name="date" placeholder="Date" />
+                            <label class="fieldlabels">Iteration: *</label> <input type="number" id="iteration_no" name="iteration_no" placeholder="Iteration" />
+                            <label class="fieldlabels">Implementation Status: </label> <input type="text" name="impl_status" id="impl_status" placeholder="Implementation Status" />
+                            <label class="fieldlabels">Project Highlights: </label> <input type="text" name="highlights" id="highlights" placeholder="Project Highlights" />
                         </div> <input type="button" name="next" class="next action-button" value="Next" />
                     </fieldset>
                     <fieldset>
                         <div class="form-card">
                             <div class="row">
                                 <div class="col-7">
-                                    <h2 class="fs-title">Skills Required:</h2>
+                                    <h2 class="fs-title">Risks/Issues List</h2>
                                 </div>
                                 <div class="col-5">
-                                    <h2 class="steps">Step 2 - 4</h2>
+                                    <h2 class="steps">Step 2 - 5</h2>
                                 </div>
                             </div> <label class="fieldlabels">Technical Skills: *</label> <input type="text" name="tech_skills" id="tech_skills" placeholder="Technical Skills" />
                             <label class="fieldlabels">Soft Skills: *</label> <input type="text" name="soft_skills" id= "soft_skills" placeholder="Soft Skills" />
@@ -76,10 +66,10 @@
                         <div class="form-card">
                             <div class="row">
                                 <div class="col-7">
-                                    <h2 class="fs-title">Project Details:</h2>
+                                    <h2 class="fs-title">Tasks in Progress/Completed Tasks</h2>
                                 </div>
                                 <div class="col-5">
-                                    <h2 class="steps">Step 3 - 4</h2>
+                                    <h2 class="steps">Step 3 - 5</h2>
                                 </div>
                             </div>
                             <label class="fieldlabels">Project Name: *</label> <input type="text" name="proj_name" id="proj_name" placeholder="Project Name" />
@@ -119,4 +109,5 @@
 </div>
 
 </body>
+
 </html>
