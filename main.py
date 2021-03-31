@@ -5,7 +5,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
-
+import collections
 import os
 
 from models import db, User, Student, Business, Internship, FileContents
@@ -132,7 +132,7 @@ def login():
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            if user.occupation == "Business" :
+            if user.occupation == "Business":
                 return businessHome(), 200
             if user.occupation == "Student":
                 return studentHome(), 200
@@ -270,6 +270,7 @@ def logout():
     logout_user()
     return render_template('landing-page.html')
 
+
 # @app.route("/upload", methods=['POST'])
 # def upload():
 #   file = request.files['inputFile']
@@ -282,3 +283,125 @@ def logout():
 
 
 # @app.route("/register", methods=(['POST']))
+
+class Students:
+    def __init__(self):
+        self.studentId = '816000505'
+        self.tech = self.Tech()
+
+    class Tech:
+        def __init__(self):
+            self.course_list = []  # This is going to be form AJAX Array
+            self.design = []
+            self.dbms = []
+            self.language = []
+
+        def dupe(self, arg):
+            mylist = arg
+            mylist = list(dict.fromkeys(mylist))
+            return mylist
+
+        def listing(self, arg):
+            list_length = len(arg)
+
+            design = []
+            dbms = []
+            language = []
+
+            for i in range(list_length):
+                if arg[i] == "COMP 2602":
+                    language.append("Python")
+                elif arg[i] == "COMP 2603":
+                    language.append("JAVA")
+                elif arg[i] == "COMP 2604":
+                    language.append("C"), language.append("C++")
+                elif arg[i] == "COMP 2605":
+                    language.append("SQL")
+                    dbms.append("MySQL"), dbms.append("Oracle")
+                elif arg[i] == "COMP 2611":
+                    language.append("C++"), language.append("Python")
+                elif arg[i] == "COMP 3603":
+                    design.append("Web")
+                elif arg[i] == "COMP 3605":
+                    language.append("Python")
+                elif arg[i] == "COMP 3606":
+                    language.append("JAVA")
+                    design.append("Mobile")
+                elif arg[i] == "COMP 3607":
+                    language.append("JAVA")
+                elif arg[i] == "COMP 3608":
+                    language.append("MiniZinc"), language.append("Python")
+                elif arg[i] == "COMP 3609":
+                    language.append("JAVA")
+                elif arg[i] == "COMP 3610":
+                    language.append("SQL")
+                    dbms.append("NoSQL")
+                elif arg[i] == "COMP 3613":
+                    language.append("Python"), language.append("HTML"), language.append("JavaScript")
+                    design.append("Web"), design.append("CSS"), design.append("SASS")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif arg[i] == "INFO 2601":
+                    language.append("Python")
+                    design.append("Networking")
+                elif arg[i] == "INFO 2602":
+                    language.append("JavaScript"), language.append("CSS"), language.append(
+                        "Flask-Python"), language.append("Python")
+                    design.append("Web")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif arg[i] == "INFO 2603":
+                    language.append("Python")
+                    design.append("Networking")
+                elif arg[i] == "INFO 2604":
+                    language.append("Python")
+                    design.append("Networking")
+                elif arg[i] == "INFO 3600":
+                    language.append("Visual Basic")
+                    dbms.append("Microsoft Access (Excel)")
+                elif arg[i] == "INFO 3602":
+                    language.append("JavaScript"), language.append("HTML")
+                    language.append("CSS"), language.append("SASS")
+                elif arg[i] == "INFO 3604":
+                    language.append("Python"), language.append("Flask-Python"), language.append(
+                        "React"), language.append("HTML"), language.append("Machine-Learning"), language.append(
+                        "JavaScript")
+                    design.append("CSS"), design.append("SASS")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif arg[i] == "INFO 3605":
+                    language.append("Python")
+                    design.append("Networking")
+                elif arg[i] == "INFO 3606":
+                    language.append("Cloud")
+                    dbms.append("IBM"), dbms.append("Cloud")  # Check this
+                elif arg[i] == "INFO 3608":
+                    dbms.append("PHP"), dbms.append("HTML"), dbms.append("WordPress")
+                    design.append("CSS"), design.append("Web")
+                    dbms.append("phpMyAdmin"), dbms.append("Xampp")
+                elif arg[i] == "INFO 3611":
+                    language.append("SQL")
+                    dbms.append("MySQL"), dbms.append("Oracle")
+
+            test = Students()
+            test.tech.design = test.tech.dupe(design)
+            test.tech.dbms = test.tech.dupe(dbms)
+            test.tech.language = test.tech.dupe(language)
+            print(test.tech.dupe(language), test.tech.dupe(design), test.tech.dupe(dbms))
+            return test
+
+    def show(self):
+        print('In outer class')
+        print('Name:', self.studentId)
+        print('TechSkills:', self.tech.language, self.tech.dbms, self.tech.design)
+
+
+courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]
+outer = Students()
+outer.tech.course_list = courselst
+print('Name:', outer.studentId)
+outer = outer.tech.listing(courselst)
+print(outer.tech.language, outer.tech.design, outer.tech.dbms)
+# outer.show()
+
+# if self.techskills.course_code[0] == self.course.courseCode:
+#    self.techskills.language.append(self.course.languages)
+#   self.techskills.networks.append(self.course.networkss)
+#  self.techskills.design.append(self.course.designs)
