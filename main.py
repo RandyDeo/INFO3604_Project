@@ -146,12 +146,6 @@ def login():
     # return render_template("student-homepage.html")
 
 
-@app.route("/studentHome", methods=(['GET']))
-@login_required
-def studentHome():
-    return render_template("student-homepage.html")
-
-
 # DCIT ROUTES
 # DCIT homepage route
 @app.route("/dcitHome", methods=(['GET']))
@@ -188,11 +182,47 @@ def dcitCompanyList():
     return render_template("dcit-companylist.html")
 
 
+#STUDENT ROUTES
+#Student home route
+@app.route("/studentHome", methods=(['GET']))
+@login_required
+def studentHome():
+    return render_template("student-homepage.html")
+
+
+#Student Contact route
+@app.route("/studentContact", methods=(['GET']))
+@login_required
+def studentContact():
+    return render_template("student-contact.html")
+
+
+#Student Internships route
+@app.route("/studentInternship", methods=(['GET']))
+@login_required
+def studentInternship():
+    return render_template("student-internships.html")
+
+
+#Student Registration route
 @app.route("/studentRegistration")
 def studentRegistration():
     return render_template("student-registration.html")
 
 
+#Student Weekly Status Report route1
+@app.route("/studentWeeklyReport")
+def studentWeeklyReport():
+    return render_template("student-weeklyreports.html")
+
+
+#Student Weekly Status Report route2 for iframe form
+@app.route("/displayStudentWeeklyReport")
+def displayStudentWeeklyReport():
+    return render_template("student-weeklyreport-form.html")
+
+
+#Student Display Student form route
 @app.route("/displayStudentForm", methods=(['GET', 'POST']))
 def displayStudentForm():
     if request.method == 'GET':
@@ -235,18 +265,21 @@ def displayStudentForm():
                 return 'Application does not exist', render_template("student-registration.html"), 400
         return
 
-
+#BUSINESS ROUTES
+#Business Home route
 @app.route("/businessHome", methods=(['GET']))
 # @login_required
 def businessHome():
     return render_template("business-homepage.html")
 
 
+#Business Registration form route
 @app.route("/businessRegistration")
 def businessRegistration():
     return render_template("business-registration.html")
 
 
+#Display Business Form route
 @app.route("/displayBusinessForm", methods=(['GET', 'POST']))
 def displayBusinessForm():
     if request.method == 'GET':
