@@ -184,6 +184,14 @@ def dcitCompanyList():
     return render_template("dcit-companylist.html")
 
 
+# DCIT get the company list route
+@app.route("/displayCompanyList", methods=(['GET']))
+@login_required
+def displayCompanyList():
+    asgs= Business.query.all()
+    return render_template("dcit-companylist.html", registered_companies=asgs)
+
+
 #STUDENT ROUTES
 #Student home route
 @app.route("/studentHome", methods=(['GET']))
