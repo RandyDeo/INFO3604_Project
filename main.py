@@ -469,6 +469,22 @@ class Students:
             return mylist
 
         def compare(self, arg):
+
+            # COURSE ARRAY
+            student_courses = []
+            # USE VARIABLE INSTEAD OF HARDCODED ID
+            student_id = "816013583"
+            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
+            parsed_dict = json.load(parsed_data_file)
+            for key in parsed_dict:
+                if parsed_dict[key] == "B-" or parsed_dict[key] == "B" or parsed_dict[key] == "B+" or \
+                        parsed_dict[key] == "A-" or parsed_dict[key] == "A" or parsed_dict[key] == "A+":
+                    str_key = str(key)
+                    student_courses.append(key)
+            # PRINT USED FOR TESTING, FEEL FREE TO REMOVE
+            print(student_courses)
+
+            #THIS IS THE TOP OF YOUR CODE
             list_length = len(arg)
 
             design = []
