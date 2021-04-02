@@ -7,8 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 import collections
 import os
+import requests
+import json
 
-from models import db, User, Student, Business, Internship, FileContents
+from models import db, User, Student, Business, Internship, FileContents, parsed_courses
 
 ''' Begin boilerplate code '''
 
@@ -226,7 +228,7 @@ def displayStudentWeeklyReport():
 @app.route("/displayStudentForm", methods=(['GET', 'POST']))
 def displayStudentForm():
     if request.method == 'GET':
-        return render_template('student-registration-form.html')
+        return render_template("student-registration-form.html")
 
     elif request.method == 'POST':
         name = request.form.get('fname')
@@ -250,6 +252,15 @@ def displayStudentForm():
         essay.save(os.path.join("uploads", uwiid + "_essay.pdf"))
         photo.save(os.path.join("uploads", uwiid + "_photo.pdf"))
 
+        filename = (uwiid + "_transcript.pdf")
+        url = "https://ark-parser.herokuapp.com/parse"
+        ajax_send = {'file': open("uploads/"+filename, "rb")}
+        parsed = requests.post(url, files=ajax_send)
+
+        parse_save = open("parsed_files/"+uwiid+"_parsed.txt", "w")
+        parse_save.write(parsed.text)
+        parse_save.close()
+
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
             new_student = Student(name=name, email=email, uwiid=uwiid, country=country,
                                   year_of_study=year_of_study, credits=credit, enrollment=enrollment,
@@ -257,13 +268,106 @@ def displayStudentForm():
                                   resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
                                   photo=(uwiid + "_essay.pdf"))
 
+            parsed_data = open("parsed_files/"+uwiid+"_parsed.txt", "r")
+            parsed_data = json.load(parsed_data)
+            for key in parsed_data:
+                if key == "id":
+                    _id = parsed_data[key]
+                if key == "gpa":
+                    _gpa = parsed_data[key]
+                if key == "comp2601":
+                    _comp2601 = parsed_data[key]
+                if key == "comp2602":
+                    _comp2602 = parsed_data[key]
+                if key == "comp2603":
+                    _comp2603 = parsed_data[key]
+                if key == "comp2604":
+                    _comp2604 = parsed_data[key]
+                if key == "comp2605":
+                    _comp2605 = parsed_data[key]
+                if key == "comp2606":
+                    _comp2606 = parsed_data[key]
+                if key == "comp2611":
+                    _comp2611 = parsed_data[key]
+                if key == "comp3601":
+                    _comp3601 = parsed_data[key]
+                if key == "comp3602":
+                    _comp3602 = parsed_data[key]
+                if key == "comp3603":
+                    _comp3603 = parsed_data[key]
+                if key == "comp3605":
+                    _comp3605 = parsed_data[key]
+                if key == "comp3606":
+                    _comp3606 = parsed_data[key]
+                if key == "comp3607":
+                    _comp3607 = parsed_data[key]
+                if key == "comp3608":
+                    _comp3608 = parsed_data[key]
+                if key == "comp3609":
+                    _comp3609 = parsed_data[key]
+                if key == "comp3610":
+                    _comp3610 = parsed_data[key]
+                if key == "comp3611":
+                    _comp3611 = parsed_data[key]
+                if key == "comp3612":
+                    _comp3612 = parsed_data[key]
+                if key == "comp3613":
+                    _comp3613 = parsed_data[key]
+                if key == "info2600":
+                    _info2600 = parsed_data[key]
+                if key == "info2601":
+                    _info2601 = parsed_data[key]
+                if key == "info2602":
+                    _info2602 = parsed_data[key]
+                if key == "info2603":
+                    _info2603 = parsed_data[key]
+                if key == "info2604":
+                    _info2604 = parsed_data[key]
+                if key == "info2605":
+                    _info2605 = parsed_data[key]
+                if key == "info3600":
+                    _info3600 = parsed_data[key]
+                if key == "info3601":
+                    _info3601 = parsed_data[key]
+                if key == "info3602":
+                    _info3602 = parsed_data[key]
+                if key == "info3604":
+                    _info3604 = parsed_data[key]
+                if key == "info3605":
+                    _info3605 = parsed_data[key]
+                if key == "info3606":
+                    _info3606 = parsed_data[key]
+                if key == "info3607":
+                    _info3607 = parsed_data[key]
+                if key == "info3608":
+                    _info3608 = parsed_data[key]
+                if key == "info3609":
+                    _info3609 = parsed_data[key]
+                if key == "info3610":
+                    _info3610 = parsed_data[key]
+                if key == "info3611":
+                    _info3611 = parsed_data[key]
+
+            new_parsed = parsed_courses(id=_id, gpa=_gpa, comp2601=_comp2601, comp2602=_comp2602, comp2603=_comp2603,
+                                        comp2604=_comp2604, comp2605=_comp2605, comp2606=_comp2606, comp2611=_comp2611,
+                                        comp3601=_comp3601, comp3602=_comp3602, comp3603=_comp3603, comp3605=_comp3605,
+                                        comp3606=_comp3606, comp3607=_comp3607, comp3608=_comp3608, comp3609=_comp3609,
+                                        comp3610=_comp3610, comp3611=_comp3611, comp3612=_comp3612, comp3613=_comp3613,
+                                        info2600=_info2600, info2601=_info2601, info2602=_info2602, info2603=_info2603,
+                                        info2604=_info2604, info2605=_info2605, info3600=_info3600, info3601=_info3601,
+                                        info3602=_info3602, info3604=_info3604, info3605=_info3605, info3606=_info3606,
+                                        info3607=_info3607, info3608=_info3608, info3609=_info3609, info3610=_info3610,
+                                        info3611=_info3611)
+
             try:
                 db.session.add(new_student)
+                db.session.add(new_parsed)
                 db.session.commit()
-                return render_template('student-homepage.html')
+                return redirect(url_for('studentHome'))
             except IntegrityError:
                 return 'Application does not exist', render_template("student-registration.html"), 400
         return
+
 
 #BUSINESS ROUTES
 #Business Home route

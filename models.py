@@ -124,3 +124,89 @@ class Internship(db.Model, UserMixin, ):
             "Business ID": self.business_ID
 
         }
+
+
+class parsed_courses(db.Model, UserMixin, ):
+    id = db.Column(db.Integer, primary_key=True)
+    gpa = db.Column(db.Integer, nullable=False)
+    comp2601 = db.Column(db.String(10), nullable=True)
+    comp2602 = db.Column(db.String(10), nullable=True)
+    comp2603 = db.Column(db.String(10), nullable=True)
+    comp2604 = db.Column(db.String(10), nullable=True)
+    comp2605 = db.Column(db.String(10), nullable=True)
+    comp2606 = db.Column(db.String(10), nullable=True)
+    comp2611 = db.Column(db.String(10), nullable=True)
+    comp3601 = db.Column(db.String(10), nullable=True)
+    comp3602 = db.Column(db.String(10), nullable=True)
+    comp3603 = db.Column(db.String(10), nullable=True)
+    comp3605 = db.Column(db.String(10), nullable=True)
+    comp3606 = db.Column(db.String(10), nullable=True)
+    comp3607 = db.Column(db.String(10), nullable=True)
+    comp3608 = db.Column(db.String(10), nullable=True)
+    comp3609 = db.Column(db.String(10), nullable=True)
+    comp3610 = db.Column(db.String(10), nullable=True)
+    comp3611 = db.Column(db.String(10), nullable=True)
+    comp3612 = db.Column(db.String(10), nullable=True)
+    comp3613 = db.Column(db.String(10), nullable=True)
+
+    info2600 = db.Column(db.String(10), nullable=True)
+    info2601 = db.Column(db.String(10), nullable=True)
+    info2602 = db.Column(db.String(10), nullable=True)
+    info2603 = db.Column(db.String(10), nullable=True)
+    info2604 = db.Column(db.String(10), nullable=True)
+    info2605 = db.Column(db.String(10), nullable=True)
+    info3600 = db.Column(db.String(10), nullable=True)
+    info3601 = db.Column(db.String(10), nullable=True)
+    info3602 = db.Column(db.String(10), nullable=True)
+    info3604 = db.Column(db.String(10), nullable=True)
+    info3605 = db.Column(db.String(10), nullable=True)
+    info3606 = db.Column(db.String(10), nullable=True)
+    info3607 = db.Column(db.String(10), nullable=True)
+    info3608 = db.Column(db.String(10), nullable=True)
+    info3609 = db.Column(db.String(10), nullable=True)
+    info3610 = db.Column(db.String(10), nullable=True)
+    info3611 = db.Column(db.String(10), nullable=True)
+
+    def toDict(self):
+        return {
+            "ID": self.id,
+            "GPA": self.gpa,
+            "COMP 2601": self.comp2601,
+            "COMP 2602": self.comp2602,
+            "COMP 2603": self.comp2603,
+            "COMP 2604": self.comp2604,
+            "COMP 2605": self.comp2605,
+            "COMP 2606": self.comp2606,
+            "COMP 2611": self.comp2611,
+            "COMP 3601": self.comp3601,
+            "COMP 3602": self.comp3602,
+            "COMP 3603": self.comp3603,
+            "COMP 3605": self.comp3605,
+            "COMP 3606": self.comp3606,
+            "COMP 3607": self.comp3607,
+            "COMP 3608": self.comp3608,
+            "COMP 3609": self.comp3609,
+            "COMP 3610": self.comp3610,
+            "COMP 3611": self.comp3611,
+            "COMP 3612": self.comp3612,
+            "COMP 3613": self.comp3613,
+
+            "INFO 2600": self.info2600,
+            "INFO 2601": self.info2601,
+            "INFO 2602": self.info2602,
+            "INFO 2603": self.info2603,
+            "INFO 2604": self.info2604,
+            "INFO 2605": self.info2605,
+            "INFO 3600": self.info3600,
+            "INFO 3601": self.info3601,
+            "INFO 3602": self.info3602,
+            "INFO 3604": self.info3604,
+            "INFO 3605": self.info3605,
+            "INFO 3606": self.info3606,
+            "INFO 3607": self.info3607,
+            "INFO 3608": self.info3608,
+            "INFO 3609": self.info3609,
+            "INFO 3610": self.info3610,
+            "INFO 3611": self.info3611
+
+        }
