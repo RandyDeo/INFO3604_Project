@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+
 # Model for User
 class User(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,6 +126,8 @@ class Internship(db.Model, UserMixin, ):
 
         }
 
+class Weekly_Report(db.Model, UserMixin):
+    reportID = db.Column(db.Integer, primary_key=True)
 
 class parsed_courses(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)
