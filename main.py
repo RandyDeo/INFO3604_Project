@@ -476,12 +476,12 @@ class Students:
             mylist = list(dict.fromkeys(mylist))
             return mylist
 
-        def compare(self, arg):
+        def compare(self):
 
             # COURSE ARRAY
             student_courses = []
             # USE VARIABLE INSTEAD OF HARDCODED ID
-            student_id = "816013583"
+            student_id = "816000505"
             parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
             parsed_dict = json.load(parsed_data_file)
             for key in parsed_dict:
@@ -493,7 +493,7 @@ class Students:
             print(student_courses)
 
             #THIS IS THE TOP OF YOUR CODE
-            list_length = len(arg)
+            list_length = len(student_courses)
 
             design = []
             dbms = []
@@ -588,7 +588,7 @@ courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]  # this is changing to cours
 outer = Students()
 outer.tech.course_list = courselst
 print('Name:', outer.studentId)
-outer = outer.tech.compare(courselst)
+outer = outer.tech.compare()
 print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 # outer.show()
 
