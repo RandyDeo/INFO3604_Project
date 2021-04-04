@@ -74,14 +74,6 @@ class Student(db.Model, UserMixin, ):
         }
 
 
-class FileContents(db.Model):
-    files_id = db.Column(db.Integer, primary_key=True)
-    transcript = db.Column(db.LargeBinary(), nullable=False)
-    resume = db.Column(db.LargeBinary(), nullable=False)
-    essay = db.Column(db.LargeBinary(), nullable=False)
-    student_uwiid = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
-
-
 class Business(db.Model, UserMixin, ):
     businessID = db.Column(db.Integer, primary_key=True)
     bname = db.Column(db.String(120), nullable=False)
@@ -107,6 +99,19 @@ class Business(db.Model, UserMixin, ):
             "Database Management Systems": self.dbms,
             "Soft Skills": self.soft_skills
 
+        }
+
+
+class DCIT_Admin(db.Model, UserMixin, ):
+    adminID = db.Column(db.Integer, primary_key=True)
+    aname = db.Column(db.String(120), nullable=False)
+    aemail = db.Column(db.String(120), unique=True, nullable=False)
+
+    def toDict(self):
+        return {
+            "Admin ID": self.adminID,
+            "Name": self.aname,
+            "Email": self.aemail
         }
 
 

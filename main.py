@@ -10,7 +10,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, FileContents, parsed_courses, Report, Risk
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
 
 ''' Begin boilerplate code '''
 
@@ -181,58 +181,58 @@ def dcitWeeklyReports():
 @app.route("/dcitCompanyList", methods=(['GET']))
 @login_required
 def dcitCompanyList():
-    return render_template("dcit-companylist.html")
-
+    asgs = Business.query.all()
+    return render_template("dcit-companylist.html", registered_companies=asgs)
 
 # DCIT get the company list route
 @app.route("/displayCompanyList", methods=(['GET']))
 @login_required
 def displayCompanyList():
-    asgs= Business.query.all()
+    asgs = Business.query.all()
     return render_template("dcit-companylist.html", registered_companies=asgs)
 
 
-#STUDENT ROUTES
-#Student home route
+# STUDENT ROUTES
+# Student home route
 @app.route("/studentHome", methods=(['GET']))
 @login_required
 def studentHome():
     return render_template("student-homepage.html")
 
 
-#Student Contact route
+# Student Contact route
 @app.route("/studentContact", methods=(['GET']))
 @login_required
 def studentContact():
     return render_template("student-contact.html")
 
 
-#Student Internships route
+# Student Internships route
 @app.route("/studentInternship", methods=(['GET']))
 @login_required
 def studentInternship():
     return render_template("student-internships.html")
 
 
-#Student Registration route
+# Student Registration route
 @app.route("/studentRegistration")
 def studentRegistration():
     return render_template("student-registration.html")
 
 
-#Student Weekly Status Report route1
+# Student Weekly Status Report route1
 @app.route("/studentWeeklyReport")
 def studentWeeklyReport():
     return render_template("student-weeklyreports.html")
 
 
-#Student Weekly Status Report route2 for iframe form
+# Student Weekly Status Report route2 for iframe form
 @app.route("/displayStudentWeeklyReport")
 def displayStudentWeeklyReport():
     return render_template("student-weeklyreport-form.html")
 
 
-#Student Display Student form route
+# Student Display Student form route
 @app.route("/displayStudentForm", methods=(['GET', 'POST']))
 def displayStudentForm():
     if request.method == 'GET':
@@ -262,10 +262,10 @@ def displayStudentForm():
 
         filename = (uwiid + "_transcript.pdf")
         url = "https://ark-parser.herokuapp.com/parse"
-        ajax_send = {'file': open("uploads/"+filename, "rb")}
+        ajax_send = {'file': open("uploads/" + filename, "rb")}
         parsed = requests.post(url, files=ajax_send)
 
-        parse_save = open("parsed_files/"+uwiid+"_parsed.txt", "w")
+        parse_save = open("parsed_files/" + uwiid + "_parsed.txt", "w")
         parse_save.write(parsed.text)
         parse_save.close()
 
@@ -276,7 +276,7 @@ def displayStudentForm():
                                   resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
                                   photo=(uwiid + "_essay.pdf"))
 
-            parsed_data = open("parsed_files/"+uwiid+"_parsed.txt", "r")
+            parsed_data = open("parsed_files/" + uwiid + "_parsed.txt", "r")
             parsed_data = json.load(parsed_data)
             for key in parsed_data:
                 if key == "id":
@@ -377,21 +377,21 @@ def displayStudentForm():
         return
 
 
-#BUSINESS ROUTES
-#Business Home route
+# BUSINESS ROUTES
+# Business Home route
 @app.route("/businessHome", methods=(['GET']))
 # @login_required
 def businessHome():
     return render_template("business-homepage.html")
 
 
-#Business Registration form route
+# Business Registration form route
 @app.route("/businessRegistration")
 def businessRegistration():
     return render_template("business-registration.html")
 
 
-#Display Business Form route
+# Display Business Form route
 @app.route("/displayBusinessForm", methods=(['GET', 'POST']))
 def displayBusinessForm():
     if request.method == 'GET':
@@ -482,7 +482,7 @@ class Students:
             student_courses = []
             # USE VARIABLE INSTEAD OF HARDCODED ID
             student_id = "816000505"
-#            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
+            #            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
             parsed_dict = json.load(parsed_data_file)
             for key in parsed_dict:
                 if parsed_dict[key] == "B-" or parsed_dict[key] == "B" or parsed_dict[key] == "B+" or \
@@ -492,7 +492,7 @@ class Students:
             # PRINT USED FOR TESTING, FEEL FREE TO REMOVE
             print(student_courses)
 
-            #THIS IS THE TOP OF YOUR CODE
+            # THIS IS THE TOP OF YOUR CODE
             list_length = len(student_courses)
 
             design = []
@@ -588,7 +588,7 @@ courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]  # this is changing to cours
 outer = Students()
 outer.tech.course_list = courselst
 print('Name:', outer.studentId)
-#outer = outer.tech.compare()
+# outer = outer.tech.compare()
 print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 # outer.show()
 
