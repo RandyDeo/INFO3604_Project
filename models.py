@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -126,8 +127,59 @@ class Internship(db.Model, UserMixin, ):
 
         }
 
-class Weekly_Report(db.Model, UserMixin):
+
+class Report(db.Model, UserMixin):
     reportID = db.Column(db.Integer, primary_key=True)
+    rep_proj_name = db.Column(db.String(120), db.ForeignKey('internship.proj_name'), nullable=False)
+    rep_studentID = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    iteration = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(120), nullable=False)
+    date_entered = db.Column(db.DateTime, nullable=False)
+
+    def toDict(self):
+        return {
+            "Report ID": self.reportID,
+            "Project Name": self.rep_proj_name,
+            "Student ID": self.rep_studentID,
+            "Date": self.date,
+            "Iteration": self.iteration,
+            "Status": self.status,
+            "Date Entered": self.date_entered
+        }
+
+
+class Risk(db.Model, UserMixin):
+    riskID = db.Column(db.Integer, primary_key=True)
+    risk_des = db.Column(db.String(300), nullable=False)
+    risk_status = db.Column(db.String(300), nullable=False)
+    risk_repID = db.Column(db.Integer, db.ForeignKey('report.reportID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "Risk ID": self.riskID,
+            "Risk Description": self.risk_des,
+            "Risk Status": self.risk_status,
+            "Report ID": self.risk_repID
+        }
+
+
+class Task(db.Model, UserMixin, ):
+    taskID = db.Column(db.Integer, primary_key=True)
+    task_des = db.Column(db.String(300), nullable=False)
+    task_member = db.Column(db.String(300), nullable=False)
+    task_complete = db.Column(db.Integer, nullable=True)
+    task_repID = db.Column(db.Integer, db.ForeignKey('report.reportID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "Task ID": self.taskID,
+            "Task Description": self.task_des,
+            "Task Member": self.task_member,
+            "Percentage Completed": self.task_complete,
+            "Report ID": self.task_repID
+        }
+
 
 class parsed_courses(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)

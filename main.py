@@ -10,7 +10,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, FileContents, parsed_courses
+from models import db, User, Student, Business, Internship, FileContents, parsed_courses, Report, Risk
 
 ''' Begin boilerplate code '''
 
@@ -482,7 +482,7 @@ class Students:
             student_courses = []
             # USE VARIABLE INSTEAD OF HARDCODED ID
             student_id = "816000505"
-            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
+#            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
             parsed_dict = json.load(parsed_data_file)
             for key in parsed_dict:
                 if parsed_dict[key] == "B-" or parsed_dict[key] == "B" or parsed_dict[key] == "B+" or \
@@ -588,7 +588,7 @@ courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]  # this is changing to cours
 outer = Students()
 outer.tech.course_list = courselst
 print('Name:', outer.studentId)
-outer = outer.tech.compare()
+#outer = outer.tech.compare()
 print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 # outer.show()
 
