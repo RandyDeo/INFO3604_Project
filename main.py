@@ -10,7 +10,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, FileContents, parsed_courses
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
 
 ''' Begin boilerplate code '''
 
@@ -83,43 +83,12 @@ def signup():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                # login_user(new_user)
-                # return render_template("student-homepage.html"), 201
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
                 return 'Email address already exists', render_template("login.html"), 400
         return
 
-
-# create new user with the form data
-# new_user = new_user.name=["name"], email=user["email"], occupation=user["occupation"])
-# new_user.password = generate_password_hash(password, method='sha256')
-
-# add the new user to the database
-# COMMENTING THIS OUT BECAUSE YEAH NO
-# @app.route("/login", methods=(['GET', 'POST']))
-# def login():
-# if request.method == 'GET':
-# return render_template('login.html')
-
-# elif request.method == 'POST':
-# email = request.form.get('email')
-# password = request.form.get('password')
-
-# if not (current_user == authenticate(email, password)):
-# pass
-# else:
-# return render_template('student-homepage')
-
-# user = User.query.filter_by(email=email).first()
-# if user and user.check_password_hash(password):
-# try:
-# login_user(user, remember=True)  # this is an error but line has to be there
-# return render_template('student-homepage.html'), 200
-# except IntegrityError:
-# return 'Email address does not exist', render_template("signup.html"), 400
-# return render_template('student-homepage.html')
 
 @app.route("/login", methods=(['GET', 'POST']))
 def login():
@@ -142,10 +111,7 @@ def login():
                 return dcitHome(), 200
         if user is None:
             return "Please create an account!"
-            # return render_template('signup.html'), 401
         return "Invalid login", 401
-
-    # return render_template("student-homepage.html")
 
 
 # DCIT ROUTES
@@ -181,58 +147,175 @@ def dcitWeeklyReports():
 @app.route("/dcitCompanyList", methods=(['GET']))
 @login_required
 def dcitCompanyList():
-    return render_template("dcit-companylist.html")
-
-
-# DCIT get the company list route
-@app.route("/displayCompanyList", methods=(['GET']))
-@login_required
-def displayCompanyList():
-    asgs= Business.query.all()
+    asgs = Business.query.all()
     return render_template("dcit-companylist.html", registered_companies=asgs)
 
 
-#STUDENT ROUTES
-#Student home route
+# DCIT get the company list route  - this is not necessary
+# If you calling a get function to the page - let it run whatever functions in the page one time -
+# DO NOT DO SEPARATE FUNCTIONS
+# @app.route("/displayCompanyList", methods=(['GET']))
+# @login_required
+# def displayCompanyList():
+#   asgs = Business.query.all()
+#  return render_template("dcit-companylist.html", registered_companies=asgs)
+
+
+# STUDENT ROUTES
+# Student home route
 @app.route("/studentHome", methods=(['GET']))
 @login_required
 def studentHome():
     return render_template("student-homepage.html")
 
 
-#Student Contact route
+# Student Contact route
 @app.route("/studentContact", methods=(['GET']))
 @login_required
 def studentContact():
     return render_template("student-contact.html")
 
 
-#Student Internships route
+# Student Internships route
 @app.route("/studentInternship", methods=(['GET']))
 @login_required
 def studentInternship():
     return render_template("student-internships.html")
 
 
-#Student Registration route
+# Student Registration route
 @app.route("/studentRegistration")
 def studentRegistration():
     return render_template("student-registration.html")
 
 
-#Student Weekly Status Report route1
+# Student Weekly Status Report route1
 @app.route("/studentWeeklyReport")
 def studentWeeklyReport():
     return render_template("student-weeklyreports.html")
 
 
-#Student Weekly Status Report route2 for iframe form
+# Student Weekly Status Report route2 for iframe form
 @app.route("/displayStudentWeeklyReport")
 def displayStudentWeeklyReport():
     return render_template("student-weeklyreport-form.html")
 
 
-#Student Display Student form route
+# Student Display Student form route
+class students:
+    def __init__(self):
+        self.tech = self.Tech()
+
+    class Tech:
+        def __init__(self):
+            self.design = []
+            self.dbms = []
+            self.language = []
+
+        def compare(self, studentID):
+            student_courses = []
+            student_id = studentID
+            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
+            parsed_dict = json.load(parsed_data_file)
+            for key in parsed_dict:
+                if parsed_dict[key] == "B-" or parsed_dict[key] == "B" or parsed_dict[key] == "B+" or \
+                        parsed_dict[key] == "A-" or parsed_dict[key] == "A" or parsed_dict[key] == "A+":
+                    str_key = str(key)
+                    student_courses.append(key)
+
+            print(student_courses)
+
+            list_length = len(student_courses)
+
+            design = []
+            dbms = []
+            language = []
+
+            for i in range(list_length):
+                if student_courses[i] == "comp2602":
+                    language.append("Python")
+                elif student_courses[i] == "comp2603":
+                    language.append("JAVA")
+                elif student_courses[i] == "comp2604":
+                    language.append("C"), language.append("C++")
+                elif student_courses[i] == "comp2605":
+                    language.append("SQL")
+                    dbms.append("MySQL"), dbms.append("Oracle")
+                elif student_courses[i] == "comp2611":
+                    language.append("C++"), language.append("Python")
+                elif student_courses[i] == "comp3603":
+                    design.append("Web")
+                elif student_courses[i] == "comp3605":
+                    language.append("Python")
+                elif student_courses[i] == "comp3606":
+                    language.append("JAVA")
+                    design.append("Mobile")
+                elif student_courses[i] == "comp3607":
+                    language.append("JAVA")
+                elif student_courses[i] == "comp3608":
+                    language.append("MiniZinc"), language.append("Python")
+                elif student_courses[i] == "comp3609":
+                    language.append("JAVA")
+                elif student_courses[i] == "comp3610":
+                    language.append("SQL")
+                    dbms.append("NoSQL")
+                elif student_courses[i] == "comp3613":
+                    language.append("Python"), language.append("HTML"), language.append("JavaScript")
+                    design.append("Web"), design.append("CSS"), design.append("SASS")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif student_courses[i] == "info2601":
+                    language.append("Python")
+                    design.append("Networking")
+                elif student_courses[i] == "info2602":
+                    language.append("JavaScript"), language.append("CSS"), language.append(
+                            "Flask-Python"), language.append("Python")
+                    design.append("Web")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif student_courses[i] == "info2603":
+                    language.append("Python")
+                    design.append("Networking")
+                elif student_courses[i] == "info2604":
+                    language.append("Python")
+                    design.append("Networking")
+                elif student_courses[i] == "info3600":
+                    language.append("Visual Basic")
+                    dbms.append("Microsoft Access (Excel)")
+                elif student_courses[i] == "info3602":
+                    language.append("JavaScript"), language.append("HTML")
+                    language.append("CSS"), language.append("SASS")
+                elif student_courses[i] == "info3604":
+                    language.append("Python"), language.append("Flask-Python"), language.append(
+                            "React"), language.append("HTML"), language.append(
+                            "Machine-Learning"), language.append(
+                            "JavaScript")
+                    design.append("CSS"), design.append("SASS")
+                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
+                elif student_courses[i] == "info3605":
+                    language.append("Python")
+                    design.append("Networking")
+                elif student_courses[i] == "info3606":
+                    language.append("Cloud")
+                    dbms.append("IBM"), dbms.append("Cloud")  # Check this
+                elif student_courses[i] == "info3608":
+                    language.append("PHP"), language.append("HTML"), language.append("WordPress")
+                    design.append("CSS"), design.append("Web")
+                    dbms.append("phpMyAdmin"), dbms.append("Xampp")
+                elif student_courses[i] == "info3611":
+                    language.append("SQL")
+                    dbms.append("MySQL"), dbms.append("Oracle")
+
+            list(dict.fromkeys(design))
+            list(dict.fromkeys(dbms))
+            list(dict.fromkeys(language))
+            test = students()
+            test.tech.design = design
+            test.tech.dbms = dbms
+            test.tech.language = language
+
+            print(language, design, dbms)
+            return test
+
+
 @app.route("/displayStudentForm", methods=(['GET', 'POST']))
 def displayStudentForm():
     if request.method == 'GET':
@@ -262,21 +345,26 @@ def displayStudentForm():
 
         filename = (uwiid + "_transcript.pdf")
         url = "https://ark-parser.herokuapp.com/parse"
-        ajax_send = {'file': open("uploads/"+filename, "rb")}
+        ajax_send = {'file': open("uploads/" + filename, "rb")}
         parsed = requests.post(url, files=ajax_send)
 
-        parse_save = open("parsed_files/"+uwiid+"_parsed.txt", "w")
+        parse_save = open("parsed_files/" + uwiid + "_parsed.txt", "w")
         parse_save.write(parsed.text)
         parse_save.close()
+
+        outer = students()
+        outer = outer.tech.compare(uwiid)
+        print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
             new_student = Student(name=name, email=email, uwiid=uwiid, country=country,
                                   year_of_study=year_of_study, credits=credit, enrollment=enrollment,
                                   curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
                                   resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
-                                  photo=(uwiid + "_essay.pdf"))
+                                  photo=(uwiid + "_photo.pdf"), language=str(outer.tech.language), design=str(outer.tech.design),
+                                  dbms=str(outer.tech.dbms))
 
-            parsed_data = open("parsed_files/"+uwiid+"_parsed.txt", "r")
+            parsed_data = open("parsed_files/" + uwiid + "_parsed.txt", "r")
             parsed_data = json.load(parsed_data)
             for key in parsed_data:
                 if key == "id":
@@ -377,21 +465,21 @@ def displayStudentForm():
         return
 
 
-#BUSINESS ROUTES
-#Business Home route
+# BUSINESS ROUTES
+# Business Home route
 @app.route("/businessHome", methods=(['GET']))
 # @login_required
 def businessHome():
     return render_template("business-homepage.html")
 
 
-#Business Registration form route
+# Business Registration form route
 @app.route("/businessRegistration")
 def businessRegistration():
     return render_template("business-registration.html")
 
 
-#Display Business Form route
+# Display Business Form route
 @app.route("/displayBusinessForm", methods=(['GET', 'POST']))
 def displayBusinessForm():
     if request.method == 'GET':
@@ -445,7 +533,6 @@ def logout():
     logout_user()
     return render_template('landing-page.html')
 
-
 # @app.route("/upload", methods=['POST'])
 # def upload():
 #   file = request.files['inputFile']
@@ -458,141 +545,3 @@ def logout():
 
 
 # @app.route("/register", methods=(['POST']))
-
-class Students:
-    def __init__(self):
-        self.studentId = '816000505'
-        self.tech = self.Tech()
-
-    class Tech:
-        def __init__(self):
-            self.course_list = []  # This is going to be form AJAX Array
-            self.design = []
-            self.dbms = []
-            self.language = []
-
-        def dupe(self, arg):
-            mylist = arg
-            mylist = list(dict.fromkeys(mylist))
-            return mylist
-
-        def compare(self, arg):
-
-            # COURSE ARRAY
-            student_courses = []
-            # USE VARIABLE INSTEAD OF HARDCODED ID
-            student_id = "816013583"
-            parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
-            parsed_dict = json.load(parsed_data_file)
-            for key in parsed_dict:
-                if parsed_dict[key] == "B-" or parsed_dict[key] == "B" or parsed_dict[key] == "B+" or \
-                        parsed_dict[key] == "A-" or parsed_dict[key] == "A" or parsed_dict[key] == "A+":
-                    str_key = str(key)
-                    student_courses.append(key)
-            # PRINT USED FOR TESTING, FEEL FREE TO REMOVE
-            print(student_courses)
-
-            #THIS IS THE TOP OF YOUR CODE
-            list_length = len(arg)
-
-            design = []
-            dbms = []
-            language = []
-
-            for i in range(list_length):
-                if arg[i] == "COMP 2602":
-                    language.append("Python")
-                elif arg[i] == "COMP 2603":
-                    language.append("JAVA")
-                elif arg[i] == "COMP 2604":
-                    language.append("C"), language.append("C++")
-                elif arg[i] == "COMP 2605":
-                    language.append("SQL")
-                    dbms.append("MySQL"), dbms.append("Oracle")
-                elif arg[i] == "COMP 2611":
-                    language.append("C++"), language.append("Python")
-                elif arg[i] == "COMP 3603":
-                    design.append("Web")
-                elif arg[i] == "COMP 3605":
-                    language.append("Python")
-                elif arg[i] == "COMP 3606":
-                    language.append("JAVA")
-                    design.append("Mobile")
-                elif arg[i] == "COMP 3607":
-                    language.append("JAVA")
-                elif arg[i] == "COMP 3608":
-                    language.append("MiniZinc"), language.append("Python")
-                elif arg[i] == "COMP 3609":
-                    language.append("JAVA")
-                elif arg[i] == "COMP 3610":
-                    language.append("SQL")
-                    dbms.append("NoSQL")
-                elif arg[i] == "COMP 3613":
-                    language.append("Python"), language.append("HTML"), language.append("JavaScript")
-                    design.append("Web"), design.append("CSS"), design.append("SASS")
-                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
-                elif arg[i] == "INFO 2601":
-                    language.append("Python")
-                    design.append("Networking")
-                elif arg[i] == "INFO 2602":
-                    language.append("JavaScript"), language.append("CSS"), language.append(
-                        "Flask-Python"), language.append("Python")
-                    design.append("Web")
-                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
-                elif arg[i] == "INFO 2603":
-                    language.append("Python")
-                    design.append("Networking")
-                elif arg[i] == "INFO 2604":
-                    language.append("Python")
-                    design.append("Networking")
-                elif arg[i] == "INFO 3600":
-                    language.append("Visual Basic")
-                    dbms.append("Microsoft Access (Excel)")
-                elif arg[i] == "INFO 3602":
-                    language.append("JavaScript"), language.append("HTML")
-                    language.append("CSS"), language.append("SASS")
-                elif arg[i] == "INFO 3604":
-                    language.append("Python"), language.append("Flask-Python"), language.append(
-                        "React"), language.append("HTML"), language.append("Machine-Learning"), language.append(
-                        "JavaScript")
-                    design.append("CSS"), design.append("SASS")
-                    dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
-                elif arg[i] == "INFO 3605":
-                    language.append("Python")
-                    design.append("Networking")
-                elif arg[i] == "INFO 3606":
-                    language.append("Cloud")
-                    dbms.append("IBM"), dbms.append("Cloud")  # Check this
-                elif arg[i] == "INFO 3608":
-                    dbms.append("PHP"), dbms.append("HTML"), dbms.append("WordPress")
-                    design.append("CSS"), design.append("Web")
-                    dbms.append("phpMyAdmin"), dbms.append("Xampp")
-                elif arg[i] == "INFO 3611":
-                    language.append("SQL")
-                    dbms.append("MySQL"), dbms.append("Oracle")
-
-            test = Students()
-            test.tech.design = test.tech.dupe(design)
-            test.tech.dbms = test.tech.dupe(dbms)
-            test.tech.language = test.tech.dupe(language)
-            print(test.tech.dupe(language), test.tech.dupe(design), test.tech.dupe(dbms))
-            return test
-
-    def show(self):
-        print('In outer class')
-        print('Name:', self.studentId)
-        print('TechSkills:', self.tech.language, self.tech.dbms, self.tech.design)
-
-
-courselst = ["COMP 2605", "COMP 3606", "INFO 3611"]  # this is changing to course list from AJAX to compare
-outer = Students()
-outer.tech.course_list = courselst
-print('Name:', outer.studentId)
-outer = outer.tech.compare(courselst)
-print(outer.tech.language, outer.tech.design, outer.tech.dbms)
-# outer.show()
-
-# if self.techskills.course_code[0] == self.course.courseCode:
-#    self.techskills.language.append(self.course.languages)
-#   self.techskills.networks.append(self.course.networkss)
-#  self.techskills.design.append(self.course.designs)

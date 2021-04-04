@@ -32,8 +32,8 @@
     <br> <br> <br>
 
     <!--LIST OF REGISTERED COMPANIES CODE STARTS HERE -->
-    {% for company in registered_companies %}
-        <h1> Business: {{company.0}}</h1>
+    <table action="/dcitCompanyList" method='GET'>
+         {% for company in registered_companies %}
         <h1>Business Name: {{company.bname}}</h1>
         <br>
         <p> Amount of Interns Required: {{company.num_interns}}</p>
@@ -43,7 +43,9 @@
         <p> Credits: {{company.credits}}</p>
         <br>
         <p> Stipend: {{company.stipend}}</p>
-    {% endfor %}
+        {% endfor %}
+    </table>
+
 
 </body>
 
