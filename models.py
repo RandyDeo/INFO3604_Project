@@ -55,6 +55,9 @@ class Student(db.Model, UserMixin, ):
     resume = db.Column(db.String(120), nullable=False)
     essay = db.Column(db.String(120), nullable=False)
     photo = db.Column(db.String(120), nullable=False)
+    language = db.Column(db.String(300), nullable=True)
+    design = db.Column(db.String(300), nullable=True)
+    dbms = db.Column(db.String(300), nullable=True)
 
     def toDict(self):
         return {
@@ -70,7 +73,10 @@ class Student(db.Model, UserMixin, ):
             "Transcript": self.transcript,
             "Resume": self.resume,
             "Essay": self.essay,
-            "Photo": self.photo
+            "Photo": self.photo,
+            "Languages": self.language,
+            "Design ": self.design,
+            "Database Management Systems": self.dbms
         }
 
 

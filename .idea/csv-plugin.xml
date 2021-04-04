@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\parsed_files\816000505_parsed.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\templates\landing-page.html">
           <value>
             <Attribute>
