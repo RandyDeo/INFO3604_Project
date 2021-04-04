@@ -184,12 +184,15 @@ def dcitCompanyList():
     asgs = Business.query.all()
     return render_template("dcit-companylist.html", registered_companies=asgs)
 
-# DCIT get the company list route
-@app.route("/displayCompanyList", methods=(['GET']))
-@login_required
-def displayCompanyList():
-    asgs = Business.query.all()
-    return render_template("dcit-companylist.html", registered_companies=asgs)
+
+# DCIT get the company list route  - this is not necessary
+# If you calling a get function to the page - let it run whatever functions in the page one time -
+# DO NOT DO SEPARATE FUNCTIONS
+# @app.route("/displayCompanyList", methods=(['GET']))
+# @login_required
+# def displayCompanyList():
+#   asgs = Business.query.all()
+#  return render_template("dcit-companylist.html", registered_companies=asgs)
 
 
 # STUDENT ROUTES
