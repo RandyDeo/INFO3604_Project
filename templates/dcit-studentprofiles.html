@@ -11,6 +11,17 @@
 
 <style>
 
+.student_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    padding: 15px 15px;
+    width: 20%;
+    text-align: center;
+    margin-left:50px
+}
+
+.student_card.hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
 
 </style>
 
@@ -29,6 +40,20 @@
         </div>
     </nav>
     <br> <br> <br>
+    <br> <br> <br>
+
+    <!--LIST OF REGISTERED COMPANIES CODE STARTS HERE -->
+    <table action="/dcitStudentProfiles" method='GET'>
+        {% for student in student_list %}
+        <div class="student_card">
+        <img src="../uploads/id.jpg" alt=student style="width:40%">
+        <p>Student Name: {{student.name}}</p>
+        <p> Student ID: {{student.uwiid}}</p>
+        <p> Degree: {{student.curr_degree}}</p>
+        </div>
+        {% endfor %}
+    </table>
+
 
 </body>
 
