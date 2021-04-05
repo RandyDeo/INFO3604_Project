@@ -133,7 +133,8 @@ def deadlines():
 @app.route("/dcitStudentProfiles", methods=(['GET']))
 @login_required
 def dcitStudentProfiles():
-    return render_template("dcit-studentprofiles.html")
+    asgs = Student.query.all()
+    return render_template("dcit-studentprofiles.html", student_list=asgs)
 
 
 # DCIT weekly reports route
