@@ -3,7 +3,7 @@
 /* Float four columns side by side */
 .column {
   float: left;
-  width: 22%;
+  width: 25%;
   padding: 0px 15px;
   margin: 0 auto;
 }
