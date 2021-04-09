@@ -358,13 +358,6 @@ def displayStudentForm():
         print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
-            new_student = Student(name=name, email=email, uwiid=uwiid, country=country,
-                                  year_of_study=year_of_study, credits=credit, enrollment=enrollment,
-                                  curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
-                                  resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
-                                  photo=(uwiid + "_photo.pdf"), language=str(outer.tech.language), design=str(outer.tech.design),
-                                  dbms=str(outer.tech.dbms))
-
             parsed_data = open("parsed_files/" + uwiid + "_parsed.txt", "r")
             parsed_data = json.load(parsed_data)
             for key in parsed_data:
@@ -455,6 +448,14 @@ def displayStudentForm():
                                         info3602=_info3602, info3604=_info3604, info3605=_info3605, info3606=_info3606,
                                         info3607=_info3607, info3608=_info3608, info3609=_info3609, info3610=_info3610,
                                         info3611=_info3611)
+
+            new_student = Student(name=name, email=email, gpa=_gpa, uwiid=uwiid, country=country,
+                                  year_of_study=year_of_study, credits=credit, enrollment=enrollment,
+                                  curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
+                                  resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
+                                  photo=(uwiid + "_photo.pdf"), language=str(outer.tech.language),
+                                  design=str(outer.tech.design),
+                                  dbms=str(outer.tech.dbms))
 
             try:
                 db.session.add(new_student)
