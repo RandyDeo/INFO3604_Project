@@ -159,20 +159,23 @@ def dcitCompanyList():
 @app.route("/dcit-shortlist", methods=(['GET']))
 @login_required
 def dcitInternList():
-    language = Business.query.all()
-    dbms =
 
+    language = Business.query.filter_by(language=language).first
+    dbms = Business.query.filter_by(dbms=dbms).first
+    design = Business.query.filter_by(design=design).first
+
+    # student = Student.query.filter_by(uwiid=uwiid).first()
 
     students = Student.query.all()
     new_intern = Shortlist()
     for student in students:
-        if student.language == company.language:
+        if student.language == language:
             student.uwiid = new_intern.internID
             company.businessID = new_intern.companyID
-        elif student.design == company.design:
+        elif student.design == design:
             student.uwiid = new_intern.internID
             company.businessID = new_intern.companyID
-        elif student.dbms == company.dbms:
+        elif student.dbms == dbms:
             student.uwiid = new_intern.internID
             company.businessID = new_intern.companyID
         print(new_intern)
