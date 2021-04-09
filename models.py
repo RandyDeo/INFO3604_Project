@@ -141,6 +141,19 @@ class Internship(db.Model, UserMixin, ):
         }
 
 
+class Shortlist(db.Model, UserMixin, ):
+    sid = db.Column(db.Integer, primary_key=True)
+    internID = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
+    companyID = db.Column(db.Integer, db.ForeignKey('business.businessID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "List ID": self.sid,
+            "Intern ID": self.internID,
+            "Company ID": self.comapanyID,
+        }
+
+
 class Report(db.Model, UserMixin):
     reportID = db.Column(db.Integer, primary_key=True)
     rep_proj_name = db.Column(db.String(120), db.ForeignKey('internship.proj_name'), nullable=False)

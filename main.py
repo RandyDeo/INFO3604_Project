@@ -10,7 +10,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk, Shortlist
 
 ''' Begin boilerplate code '''
 
@@ -35,7 +35,7 @@ login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def user_loader(email):
-    return User.query.get(email)  # review this// may result in error
+    return User.query.get(email)
 
 
 ''' End Boilerplate Code '''
@@ -49,7 +49,6 @@ def authenticate(email, password):
         return user
 
 
-# Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
     return models.User.query.get(payload['identity'])
 
@@ -110,9 +109,13 @@ def login():
             elif user.occupation == "DCIT":
                 return dcitHome(), 200
         if user is None:
-            return "Please create an account!"
-        return "Invalid login", 401
+            return "Please create an account!", signupPage()
+    return "Invalid login", 401
 
+
+# new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
+# db.session.add(new_admin)
+# db.session.commit()
 
 # DCIT ROUTES
 # DCIT homepage route
@@ -150,6 +153,33 @@ def dcitWeeklyReports():
 def dcitCompanyList():
     asgs = Business.query.all()
     return render_template("dcit-companylist.html", registered_companies=asgs)
+
+
+# DCIT Intern List
+@app.route("/dcit-shortlist", methods=(['GET']))
+@login_required
+def dcitInternList():
+    language = Business.query.all()
+    dbms =
+
+
+    students = Student.query.all()
+    new_intern = Shortlist()
+    for student in students:
+        if student.language == company.language:
+            student.uwiid = new_intern.internID
+            company.businessID = new_intern.companyID
+        elif student.design == company.design:
+            student.uwiid = new_intern.internID
+            company.businessID = new_intern.companyID
+        elif student.dbms == company.dbms:
+            student.uwiid = new_intern.internID
+            company.businessID = new_intern.companyID
+        print(new_intern)
+        db.session.add(new_intern)
+        db.session.commit()
+    internlist = Shortlist.query.all()
+    return render_template("dcit-shortlist.html", interns=internlist)
 
 
 # DCIT get the company list route  - this is not necessary
@@ -269,7 +299,7 @@ class students:
                     design.append("Networking")
                 elif student_courses[i] == "info2602":
                     language.append("JavaScript"), language.append("CSS"), language.append(
-                            "Flask-Python"), language.append("Python")
+                        "Flask-Python"), language.append("Python")
                     design.append("Web")
                     dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
                 elif student_courses[i] == "info2603":
@@ -286,9 +316,9 @@ class students:
                     language.append("CSS"), language.append("SASS")
                 elif student_courses[i] == "info3604":
                     language.append("Python"), language.append("Flask-Python"), language.append(
-                            "React"), language.append("HTML"), language.append(
-                            "Machine-Learning"), language.append(
-                            "JavaScript")
+                        "React"), language.append("HTML"), language.append(
+                        "Machine-Learning"), language.append(
+                        "JavaScript")
                     design.append("CSS"), design.append("SASS")
                     dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
                 elif student_courses[i] == "info3605":
@@ -534,16 +564,3 @@ def unauthorized():
 def logout():
     logout_user()
     return render_template('landing-page.html')
-
-# @app.route("/upload", methods=['POST'])
-# def upload():
-#   file = request.files['inputFile']
-
-#  newFile = FileContents(name=file.filename, data=file.read())
-# db.session.add(newFile)
-# db.session.commit()
-
-# return 'Saved ' + file.filename + ' to the database!'
-
-
-# @app.route("/register", methods=(['POST']))
