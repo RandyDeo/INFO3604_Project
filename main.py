@@ -137,6 +137,25 @@ def dcitStudentProfiles():
     return render_template("dcit-studentprofiles.html", student_list=asgs)
 
 
+@app.route("/dcitStudentProfiles", methods=(['POST']))
+@login_required
+def search():
+	if request.method == 'POST':
+	    entry = request.form.to_dict()
+		key = entry['keyword']
+		print(key)
+		searchk = "%{}%".format(key)
+		asgs = Student.query.filter(Student.studentID.like(searchk)).all()
+		if asgs:
+			report = ""
+			return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+		else:
+			report = "No student found."
+			return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+	#return error(), 400
+
+
+
 # DCIT weekly reports route
 @app.route("/dcitWeeklyReports", methods=(['GET']))
 @login_required
