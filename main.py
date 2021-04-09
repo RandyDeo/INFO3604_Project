@@ -342,7 +342,7 @@ def displayStudentForm():
         transcript.save(os.path.join("uploads", uwiid + "_transcript.pdf"))
         resume.save(os.path.join("uploads", uwiid + "_resume.pdf"))
         essay.save(os.path.join("uploads", uwiid + "_essay.pdf"))
-        photo.save(os.path.join("uploads", uwiid + "_photo.pdf"))
+        photo.save(os.path.join("static/images/student_pictures", uwiid + "_photo.jpg"))
 
         filename = (uwiid + "_transcript.pdf")
         url = "https://ark-parser.herokuapp.com/parse"
@@ -453,7 +453,7 @@ def displayStudentForm():
                                   year_of_study=year_of_study, credits=credit, enrollment=enrollment,
                                   curr_degree=curr_degree, transcript=(uwiid + "_transcript.pdf"),
                                   resume=(uwiid + "_resume.pdf"), essay=(uwiid + "_essay.pdf"),
-                                  photo=(uwiid + "_photo.pdf"), language=str(outer.tech.language),
+                                  photo=(uwiid + "_photo.jpg"), language=str(outer.tech.language),
                                   design=str(outer.tech.design),
                                   dbms=str(outer.tech.dbms))
 
