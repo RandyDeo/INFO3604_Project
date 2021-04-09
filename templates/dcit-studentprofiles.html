@@ -23,6 +23,10 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
+img {
+  border-radius: 50%;
+}
+
 </style>
 
 <body>
@@ -46,10 +50,12 @@
     <table action="/dcitStudentProfiles" method='GET'>
         {% for student in student_list %}
         <div class="student_card">
-        <img src="../uploads/id.jpg" alt=student style="width:40%">
+        <img src="../static/images/student_pictures/id.jpg" alt=student style="width:40%">
         <p>Student Name: {{student.name}}</p>
         <p> Student ID: {{student.uwiid}}</p>
+        <p> Email: {{student.email}}</p>
         <p> Degree: {{student.curr_degree}}</p>
+        <p> GPA: {{student.gpa}}</p>
         </div>
         {% endfor %}
     </table>
