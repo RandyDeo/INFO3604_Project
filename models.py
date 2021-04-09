@@ -43,6 +43,7 @@ class User(db.Model, UserMixin, ):
 class Student(db.Model, UserMixin, ):
     studentID = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
+    gpa = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     uwiid = db.Column(db.Integer, unique=True, nullable=False)
     country = db.Column(db.String(120), nullable=False)
@@ -63,6 +64,7 @@ class Student(db.Model, UserMixin, ):
         return {
             "Student ID": self.studentID,
             "Name": self.name,
+            "GPA": self.gpa,
             "Email": self.email,
             "uwiid": self.uwiid,
             "Country": self.country,
