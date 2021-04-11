@@ -34,9 +34,9 @@
     <!--LIST OF SHORTLIST CODE STARTS HERE -->
     <table action="/dcit-shortlist" method='GET'>
 
-        {% for business in businesses %}
-            {% for student in students %}
-                {% for internship in internships%}
+
+            {% for business in businesses %}
+                {% for student in students %}
                     {% for intern in interns %}
                         <br>
                         <p>Business Name: {{business.bname}}</p>
