@@ -143,14 +143,14 @@ class Internship(db.Model, UserMixin, ):
 
 class Shortlist(db.Model, UserMixin, ):
     sid = db.Column(db.Integer, primary_key=True)
-    internID = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
+    internID = db.Column(db.Integer, db.ForeignKey('student.studentID'), nullable=False)
     companyID = db.Column(db.Integer, db.ForeignKey('business.businessID'), nullable=False)
 
     def toDict(self):
         return {
             "List ID": self.sid,
             "Intern ID": self.internID,
-            "Company ID": self.comapanyID,
+            "Company ID": self.companyID,
         }
 
 

@@ -160,30 +160,24 @@ def dcitCompanyList():
 @login_required
 def dcitInternList():
 
-    language = Business.query.filter_by(language=language).first
-    dbms = Business.query.filter_by(dbms=dbms).first
-    design = Business.query.filter_by(design=design).first
-
-    # student = Student.query.filter_by(uwiid=uwiid).first()
-
+    businesses = Business.query.all()
     students = Student.query.all()
-    new_intern = Shortlist()
-    for student in students:
-        if student.language == language:
-            student.uwiid = new_intern.internID
-            company.businessID = new_intern.companyID
-        elif student.design == design:
-            student.uwiid = new_intern.internID
-            company.businessID = new_intern.companyID
-        elif student.dbms == dbms:
-            student.uwiid = new_intern.internID
-            company.businessID = new_intern.companyID
-        print(new_intern)
-        db.session.add(new_intern)
-        db.session.commit()
-    internlist = Shortlist.query.all()
-    return render_template("dcit-shortlist.html", interns=internlist)
 
+    num_interns = 0
+    for business in businesses:
+        for student in students:
+            if any(item in list(business.language) for item in student.language):
+                if any(item in list(business.dbms) for item in student.dbms):
+                    if any(item in list(business.design) for item in student.design):
+                        if num_interns < business.num_interns:
+                            new_intern = Shortlist(internID=student.studentID, companyID=business.businessID)
+                            db.session.add(new_intern)
+                            db.session.commit()
+                            num_interns + 1
+
+    interns = Shortlist.query.all()
+    internships = Internship.query.all()
+    return render_template("dcit-shortlist.html", interns=interns, students=students, businesses=businesses, internships=internships)
 
 # DCIT get the company list route  - this is not necessary
 # If you calling a get function to the page - let it run whatever functions in the page one time -
@@ -246,7 +240,7 @@ class students:
             self.dbms = []
             self.language = []
 
-        def compare(self, studentID):
+        def compareList(self, studentID):
             student_courses = []
             student_id = studentID
             parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
@@ -269,7 +263,7 @@ class students:
                 if student_courses[i] == "comp2602":
                     language.append("Python")
                 elif student_courses[i] == "comp2603":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp2604":
                     language.append("C"), language.append("C++")
                 elif student_courses[i] == "comp2605":
@@ -282,14 +276,14 @@ class students:
                 elif student_courses[i] == "comp3605":
                     language.append("Python")
                 elif student_courses[i] == "comp3606":
-                    language.append("JAVA")
+                    language.append("Java")
                     design.append("Mobile")
                 elif student_courses[i] == "comp3607":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp3608":
                     language.append("MiniZinc"), language.append("Python")
                 elif student_courses[i] == "comp3609":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp3610":
                     language.append("SQL")
                     dbms.append("NoSQL")
@@ -346,7 +340,6 @@ class students:
             test.tech.dbms = dbms
             test.tech.language = language
 
-            print(language, design, dbms)
             return test
 
 
@@ -387,8 +380,8 @@ def displayStudentForm():
         parse_save.close()
 
         outer = students()
-        outer = outer.tech.compare(uwiid)
-        print(outer.tech.language, outer.tech.design, outer.tech.dbms)
+        outer = outer.tech.compareList(uwiid)
+        # print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
             parsed_data = open("parsed_files/" + uwiid + "_parsed.txt", "r")

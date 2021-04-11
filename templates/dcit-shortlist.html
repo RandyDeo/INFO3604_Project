@@ -34,14 +34,23 @@
     <!--LIST OF SHORTLIST CODE STARTS HERE -->
     <table action="/dcit-shortlist" method='GET'>
 
-        {% for intern in internlist %}
+        {% for business in businesses %}
+            {% for student in students %}
+                {% for internship in internships%}
+                    {% for intern in interns %}
+                        <br>
+                        <p>Business Name: {{business.bname}}</p>
+                        <p>Project Name:{{internship.proj_name}} </p>
+                        <p>Number of Interns: {{business.num_interns}}</p>
+                        <p>Stipend: ${{business.stipend}}</p>
+                        <p>Intern ID : {{intern.internID}}</p>
+                        <p>Name: {{student.name}}</p>
+                        <br>
 
-            <h1>Business Name: {{intern.companyID.name}}</h1>
-             <br>
-            <p> Interns: {{intern.internID}}</p>
-            <br>
-            <p> Name: {{intern.internID.name}}</p>
-            <br>
+                        <br>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
         {% endfor %}
     </table>
 
