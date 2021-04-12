@@ -194,6 +194,21 @@ class Task(db.Model, UserMixin, ):
         }
 
 
+class Deadlines(db.Model, UserMixin, ):
+    deadlineID = db.Column(db.Integer, primary_key=True)
+    deadline_message = db.Column(db.String(300), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    deadline_adminID = db.Column(db.Integer, db.ForeignKey('dcit_admin.adminID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "Deadline ID": self.deadlineID,
+            "Deadline Message": self.deadline_message,
+            "Date": self.date,
+            "Admin ID": self.deadline_adminID
+        }
+
+
 class parsed_courses(db.Model, UserMixin, ):
     id = db.Column(db.Integer, primary_key=True)
     gpa = db.Column(db.Integer, nullable=False)

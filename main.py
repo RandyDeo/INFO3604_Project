@@ -5,12 +5,13 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
+from sqlalchemy import or_
 import collections
 import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Deadlines, Risk
 
 ''' Begin boilerplate code '''
 
@@ -134,26 +135,27 @@ def deadlines():
 @login_required
 def dcitStudentProfiles():
     asgs = Student.query.all()
-    return render_template("dcit-studentprofiles.html", student_list=asgs)
+    report= ""
+    return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
 
-
+#DCIT Student Profiles Search Function works with IDs lol
 @app.route("/dcitStudentProfiles", methods=(['POST']))
 @login_required
-def search():
-	if request.method == 'POST':
-	    entry = request.form.to_dict()
-		key = entry['keyword']
-		print(key)
-		searchk = "%{}%".format(key)
-		asgs = Student.query.filter(Student.studentID.like(searchk)).all()
-		if asgs:
-			report = ""
-			return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
-		else:
-			report = "No student found."
-			return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
-	#return error(), 400
-
+def searchID():
+    if request.method == 'POST':
+        entry = request.form.to_dict()
+        key = entry['keyword']
+        print(key)
+        searchkey = "%{}%".format(key)
+        asgs = Student.query.filter(Student.uwiid.like(searchkey)).all()
+        #asgs = Student.query.filter(Student.name.like(searchkey)).all()
+        if asgs:
+            report = ""
+            return render_template("dcit-studentprofiles.html", message = report, student_list=asgs)
+        else:
+            report = "No student found."
+            return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+    return error(), 400
 
 
 # DCIT weekly reports route
@@ -542,6 +544,10 @@ def displayBusinessForm():
                 return 'Application does not exist', render_template("business-registration.html"), 400
     return
 
+
+@app.route("/oops")
+def error():
+    return render_template("error.html")
 
 @login_manager.unauthorized_handler
 def unauthorized():
