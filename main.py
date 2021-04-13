@@ -10,7 +10,8 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk, Shortlist
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, \
+    Deadlines
 
 ''' Begin boilerplate code '''
 
@@ -159,25 +160,76 @@ def dcitCompanyList():
 @app.route("/dcit-shortlist", methods=(['GET']))
 @login_required
 def dcitInternList():
-
     businesses = Business.query.all()
-    students = Student.query.all()
+    Students = Student.query.all()
 
+    sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
+    # Counts
     num_interns = 0
-    for business in businesses:
-        for student in students:
-            if any(item in list(business.language) for item in student.language):
-                if any(item in list(business.dbms) for item in student.dbms):
-                    if any(item in list(business.design) for item in student.design):
-                        if num_interns < business.num_interns:
-                            new_intern = Shortlist(internID=student.studentID, companyID=business.businessID)
-                            db.session.add(new_intern)
-                            db.session.commit()
-                            num_interns + 1
 
-    interns = Shortlist.query.all()
-    internships = Internship.query.all()
-    return render_template("dcit-shortlist.html", interns=interns, students=students, businesses=businesses, internships=internships)
+    # Checks
+    l_check = False
+    db_check = False
+    de_check = False
+    temp = []
+
+    for business in businesses:
+
+        if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
+            continue
+
+        else:
+            internlist = []
+            i = 0  # Filtering for Fully Qualified
+            if sort[i].language == business.language:
+                l_check = True
+            if sort[i].dbms == business.dbms:
+                db_check = True
+            if sort[i].design == business.design:
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+                # Filtering for Overly Qualified
+            set1 = set(list(business.language))
+            set2 = set(sort[i].language)
+            set3 = set(list(business.dbms))
+            set4 = set(sort[i].dbms)
+            set5 = set(list(business.design))
+            set6 = set(sort[i].design)
+
+            if set1.issubset(set2):
+                l_check = True
+            if set3.issubset(set4):
+                db_check = True
+            if set5.issubset(set6):
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+                # Filtering for Barely Qualified
+            if set1.intersection(set2):
+                l_check = True
+            if set3.intersection(set4):
+                db_check = True
+            if set5.intersection(set6):
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+        print("Business Name: ", business.bname)
+        print(internlist)
+        temp.append(internlist)
+    temp.insert(0,'NULL')
+    num_interns = num_interns + 1
+    # if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
+    #   set(temp[1]).remove(set(temp[2]))
+    temps = []
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
+
 
 # DCIT get the company list route  - this is not necessary
 # If you calling a get function to the page - let it run whatever functions in the page one time -

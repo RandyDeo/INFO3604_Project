@@ -36,22 +36,14 @@
 
 
             {% for business in businesses %}
-                {% for student in students %}
-                    {% for intern in interns %}
                         <br>
                         <p>Business Name: {{business.bname}}</p>
-                        <p>Project Name:{{internship.proj_name}} </p>
-                        <p>Number of Interns: {{business.num_interns}}</p>
                         <p>Stipend: ${{business.stipend}}</p>
-                        <p>Intern ID : {{intern.internID}}</p>
-                        <p>Name: {{student.name}}</p>
+                        <p>List of Interns: {{temps[business.businessID]}}</p>
                         <br>
 
-                        <br>
-                    {% endfor %}
-                {% endfor %}
             {% endfor %}
-        {% endfor %}
+
     </table>
 
 

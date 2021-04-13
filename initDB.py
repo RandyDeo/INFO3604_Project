@@ -1,4 +1,4 @@
-from main import db, User, Student, Business, Internship, Report, Risk, DCIT_Admin, Shortlist, app
+from main import db, User, Student, Business, Internship, Report, Risk, DCITAdmin, Shortlist, Deadlines, app
 import csv
 
 db.create_all(app=app)

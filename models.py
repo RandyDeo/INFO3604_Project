@@ -110,7 +110,7 @@ class Business(db.Model, UserMixin, ):
         }
 
 
-class DCIT_Admin(db.Model, UserMixin, ):
+class DCITAdmin(db.Model, UserMixin, ):
     adminID = db.Column(db.Integer, primary_key=True)
     aname = db.Column(db.String(120), nullable=False)
     aemail = db.Column(db.String(120), unique=True, nullable=False)
@@ -144,13 +144,32 @@ class Internship(db.Model, UserMixin, ):
 class Shortlist(db.Model, UserMixin, ):
     sid = db.Column(db.Integer, primary_key=True)
     internID = db.Column(db.Integer, db.ForeignKey('student.studentID'), nullable=False)
+    intern_name = db.Column(db.String(120), db.ForeignKey('student.name'), nullable=False)
     companyID = db.Column(db.Integer, db.ForeignKey('business.businessID'), nullable=False)
+    company_name = db.Column(db.String(120), db.ForeignKey('business.bname'), nullable=False)
+    proj_name = db.Column(db.String(120), db.ForeignKey('internship.proj_name'), nullable=False)
 
     def toDict(self):
         return {
             "List ID": self.sid,
             "Intern ID": self.internID,
             "Company ID": self.companyID,
+            "Project Name": self.proj_name
+        }
+
+
+class Deadlines(db.Model, UserMixin, ):
+    deadlineID = db.Column(db.Integer, primary_key=True)
+    deadline_message = db.Column(db.String(300), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    deadline_adminID = db.Column(db.Integer, db.ForeignKey('dcit_admin.adminID'), nullable=False)
+
+    def toDict(self):
+        return {
+            "Deadline ID": self.deadlineID,
+            "Deadline Message": self.deadline_message,
+            "Date": self.date,
+            "Admin ID": self.deadline_adminID
         }
 
 
