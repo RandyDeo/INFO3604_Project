@@ -109,6 +109,9 @@ def login():
             if user.occupation == "Student":
                 return studentHome(), 200
             elif user.occupation == "DCIT":
+                new_admin = DCITAdmin(aname=user.name, aemail=user.email)
+                db.session.add(new_admin)
+                db.session.commit()
                 return dcitHome(), 200
         if user is None:
             return "Please create an account!"
@@ -132,7 +135,6 @@ def deadlines():
 
     elif request.method == 'POST':
         deadline_message = request.form.get('deadline')
-
         deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
 
         if deadline is None:
@@ -152,10 +154,11 @@ def deadlines():
 @login_required
 def dcitStudentProfiles():
     asgs = Student.query.all()
-    report= ""
+    report = ""
     return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
 
-#DCIT Student Profiles Search Function works with IDs lol
+
+# DCIT Student Profiles Search Function works with IDs lol
 @app.route("/dcitStudentProfiles", methods=(['POST']))
 @login_required
 def searchID():
@@ -165,10 +168,10 @@ def searchID():
         print(key)
         searchkey = "%{}%".format(key)
         asgs = Student.query.filter(Student.uwiid.like(searchkey)).all()
-        #asgs = Student.query.filter(Student.name.like(searchkey)).all()
+        # asgs = Student.query.filter(Student.name.like(searchkey)).all()
         if asgs:
             report = ""
-            return render_template("dcit-studentprofiles.html", message = report, student_list=asgs)
+            return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
         else:
             report = "No student found."
             return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
@@ -307,7 +310,7 @@ class students:
                     design.append("Networking")
                 elif student_courses[i] == "info2602":
                     language.append("JavaScript"), language.append("CSS"), language.append(
-                            "Flask-Python"), language.append("Python")
+                        "Flask-Python"), language.append("Python")
                     design.append("Web")
                     dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
                 elif student_courses[i] == "info2603":
@@ -324,9 +327,9 @@ class students:
                     language.append("CSS"), language.append("SASS")
                 elif student_courses[i] == "info3604":
                     language.append("Python"), language.append("Flask-Python"), language.append(
-                            "React"), language.append("HTML"), language.append(
-                            "Machine-Learning"), language.append(
-                            "JavaScript")
+                        "React"), language.append("HTML"), language.append(
+                        "Machine-Learning"), language.append(
+                        "JavaScript")
                     design.append("CSS"), design.append("SASS")
                     dbms.append("MySQL"), dbms.append("Oracle"), dbms.append("MongoDB")
                 elif student_courses[i] == "info3605":
@@ -565,6 +568,7 @@ def displayBusinessForm():
 @app.route("/oops")
 def error():
     return render_template("error.html")
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
