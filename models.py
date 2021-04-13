@@ -113,7 +113,7 @@ class Business(db.Model, UserMixin, ):
 class DCITAdmin(db.Model, UserMixin, ):
     adminID = db.Column(db.Integer, primary_key=True)
     aname = db.Column(db.String(120), nullable=False)
-    aemail = db.Column(db.String(120), unique=True, nullable=False)
+    aemail = db.Column(db.String(120), nullable=False)
 
     def toDict(self):
         return {

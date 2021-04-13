@@ -4,7 +4,7 @@ from flask_login import login_user, LoginManager, login_required, logout_user, c
 from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import timedelta
+from datetime import timedelta, datetime
 from sqlalchemy import or_
 import collections
 import os
@@ -109,9 +109,6 @@ def login():
             if user.occupation == "Student":
                 return studentHome(), 200
             elif user.occupation == "DCIT":
-                new_admin = DCITAdmin(aname=user.name, aemail=user.email)
-                db.session.add(new_admin)
-                db.session.commit()
                 return dcitHome(), 200
         if user is None:
             return "Please create an account!"
@@ -136,14 +133,21 @@ def deadlines():
     elif request.method == 'POST':
         deadline_message = request.form.get('deadline')
         deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
+        admin = User.query.filter_by(occupation="DCIT").first()
+
+
+        new_admin = DCITAdmin(aname=admin.name, aemail=admin.email)
+        db.session.add(new_admin)
+        db.session.commit()
 
         if deadline is None:
-            new_deadline = Deadlines(deadline_message=deadline_message)
-            try:
+                new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
+                new_deadline.date = datetime.now()
+        try:
                 db.session.add(new_deadline)
                 db.session.commit()
                 return redirect(url_for('deadlines'))
-            except IntegrityError:
+        except IntegrityError:
                 db.session.rollback()
                 return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
     return
