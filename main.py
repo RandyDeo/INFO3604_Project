@@ -11,7 +11,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Deadlines, Risk
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Deadlines, Risk
 
 ''' Begin boilerplate code '''
 
@@ -124,10 +124,27 @@ def dcitHome():
 
 
 # DCIT deadlines route
-@app.route("/deadlines", methods=(['GET']))
+@app.route("/deadlines", methods=(['GET', 'POST']))
 @login_required
 def deadlines():
-    return render_template("dcit-deadlines.html")
+    if request.method == 'GET':
+        return render_template("dcit-deadlines.html")
+
+    elif request.method == 'POST':
+        deadline_message = request.form.get('deadline')
+
+        deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
+
+        if deadline is None:
+            new_deadline = Deadlines(deadline_message=deadline_message)
+            try:
+                db.session.add(new_deadline)
+                db.session.commit()
+                return redirect(url_for('deadlines'))
+            except IntegrityError:
+                db.session.rollback()
+                return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
+    return
 
 
 # DCIT student profiles route
