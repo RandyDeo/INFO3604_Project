@@ -149,8 +149,10 @@ def deadlines():
         db.session.commit()
 
         if deadline is None:
+                curr_date = datetime.now()
                 new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-                new_deadline.date = datetime.now()
+                new_deadline.date = curr_date.date()
+
         try:
                 db.session.add(new_deadline)
                 db.session.commit()
@@ -336,8 +338,8 @@ def studentInternship():
 @login_required
 def studentDeadlines():
     asgs = Deadlines.query.all()
-    #asgs = Deadlines.query.filter_by(adminID)
-    return render_template("student-deadlines.html", deadlines=asgs)
+    admin_list = DCITAdmin.query.all()
+    return render_template("student-deadlines.html", deadlines=asgs, admin_list=admin_list)
 
 # Student Registration route
 @app.route("/studentRegistration")
