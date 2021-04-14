@@ -74,20 +74,20 @@ img {
     {{message }}
 
     <br> <br> <br>
+    <br> <br> <br>
 
-    <!--LIST OF REGISTERED COMPANIES CODE STARTS HERE -->
-    <table action="/dcitStudentProfiles" method='GET'>
+    <form action="/dcitWeeklyReports" method="POST">
+
         {% for student in student_list %}
         <div class="student_card">
-        <img src="../static/images/student_pictures/{{student.photo}}" alt=student width="40%" height="130">
-        <p>Student Name: {{student.name}}</p>
-        <p> Student ID: {{student.uwiid}}</p>
-        <p> Email: {{student.email}}</p>
-        <p> Degree: {{student.curr_degree}}</p>
-        <p> GPA: {{student.gpa}}</p>
+            <img src="../static/images/student_pictures/{{student.photo}}" alt=student width="40%" height="130">
+            <p>Student Name: {{student.name}}</p>
+            <p> Student ID: {{student.uwiid}}</p>
+            <button type="submit" id="v_report" name="v_report" value={{student.uwiid}}>View Weekly Reports</button>
         </div>
         {% endfor %}
-    </table>
+
+    </form>
 
 
 </body>
