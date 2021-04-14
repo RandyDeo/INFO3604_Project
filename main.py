@@ -168,7 +168,7 @@ def dcitStudentProfiles():
 
 
 # DCIT Student Profiles Search Function works with IDs lol
-@app.route("/dcitStudentProfiles", methods=(['POST']))
+@app.route("/dcitStudentProfiles1", methods=(['POST']))
 @login_required
 def searchID():
     if request.method == 'POST':
