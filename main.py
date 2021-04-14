@@ -225,78 +225,82 @@ def dcitCompanyList():
 
 
 # DCIT Intern List
-@app.route("/dcit-shortlist", methods=(['GET']))
-@login_required
-def dcitInternList():
-    businesses = Business.query.all()
-    Students = Student.query.all()
+#@app.route("/dcit-shortlist", methods=(['GET']))
+#@login_required
+#def dcitInternList():
 
-    sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
-    # Counts
-    num_interns = 0
+businesses = Business.query.all()
+Students = Student.query.all()
 
-    # Checks
-    l_check = False
-    db_check = False
-    de_check = False
-    temp = []
+sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
 
-    for business in businesses:
+# Counts
+num_interns = 0
 
-        if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
-            continue
+# Checks
+l_check = False
+db_check = False
+de_check = False
+temp = []
 
-        else:
-            internlist = []
-            i = 0  # Filtering for Fully Qualified
-            if sort[i].language == business.language:
+for business in businesses:
+
+    if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
+        continue
+
+    else:
+        internlist = []
+        i = 0  # Filtering for Fully Qualified
+
+        if sort[i].language == business.language:
+            l_check = True
+        if sort[i].dbms == business.dbms:
+            db_check = True
+        if sort[i].design == business.design:
+            de_check = True
+        if l_check == True & db_check == True & de_check == True:
+            internlist.append(sort[i].name)
+            i = i + 1
+
+                                     # Filtering for Overly Qualified
+        set1 = set(list(business.language))
+        set2 = set(sort[i].language)
+        set3 = set(list(business.dbms))
+        set4 = set(sort[i].dbms)
+        set5 = set(list(business.design))
+        set6 = set(sort[i].design)
+
+        if set1.issubset(set2):
                 l_check = True
-            if sort[i].dbms == business.dbms:
+        if set3.issubset(set4):
                 db_check = True
-            if sort[i].design == business.design:
+        if set5.issubset(set6):
                 de_check = True
-            if l_check == True & db_check == True & de_check == True:
-                internlist.append(sort[i].name)
-                i = i + 1
-
-                # Filtering for Overly Qualified
-            set1 = set(list(business.language))
-            set2 = set(sort[i].language)
-            set3 = set(list(business.dbms))
-            set4 = set(sort[i].dbms)
-            set5 = set(list(business.design))
-            set6 = set(sort[i].design)
-
-            if set1.issubset(set2):
-                l_check = True
-            if set3.issubset(set4):
-                db_check = True
-            if set5.issubset(set6):
-                de_check = True
-            if l_check == True & db_check == True & de_check == True:
+        if l_check == True & db_check == True & de_check == True:
                 internlist.append(sort[i].name)
                 i = i + 1
 
                 # Filtering for Barely Qualified
-            if set1.intersection(set2):
+        if set1.intersection(set2):
                 l_check = True
-            if set3.intersection(set4):
+        if set3.intersection(set4):
                 db_check = True
-            if set5.intersection(set6):
+        if set5.intersection(set6):
                 de_check = True
-            if l_check == True & db_check == True & de_check == True:
+        if l_check == True & db_check == True & de_check == True:
                 internlist.append(sort[i].name)
                 i = i + 1
 
-        print("Business Name: ", business.bname)
-        print(internlist)
-        temp.append(internlist)
+    print(len(internlist))
+    print("Business Name: ", business.bname)
+    print(internlist)
+    temp.append(internlist)
     temp.insert(0,'NULL')
+
     num_interns = num_interns + 1
-    # if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
-    #   set(temp[1]).remove(set(temp[2]))
-    temps = []
-    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
+if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
+       set(temp[1]).remove(set(temp[2]))
+    #return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
 
 
 # DCIT get the company list route  - this is not necessary
