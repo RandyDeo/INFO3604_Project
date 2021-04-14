@@ -12,7 +12,7 @@ import requests
 import json
 
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Shortlist, Deadlines
 
 
 ''' Begin boilerplate code '''
@@ -77,7 +77,7 @@ def signup():
         email = request.form.get('email')
         name = request.form.get('name')
         occupation = request.form.get('occupation')
-        password = request.form.get('pass')
+        password = request.form.get('passw')
         user = User.query.filter_by(email=email).first()
         if user is None:
             new_user = User(name=name, email=email, occupation=occupation)
@@ -89,7 +89,7 @@ def signup():
             except IntegrityError:
                 db.session.rollback()
                 flash("Email address already exists")
-                #return render_template ("login.html"), 400               
+                #return render_template ("login.html"), 400
         return render_template("signup.html"), 401
 
 
@@ -100,26 +100,23 @@ def login():
 
     elif request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('pass')
+        password = request.form.get('passw')
 
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            if user.occupation == "Business":
+            if user.occupation == "Business" or user.occupation == "business":
                 return businessHome(), 200
-            if user.occupation == "Student":
+            if user.occupation == "Student" or user.occupation == "student":
                 return studentHome(), 200
-            elif user.occupation == "DCIT":
+            elif user.occupation == "DCIT" or user.occupation == "dcit":
                 return dcitHome(), 200
         elif user is None:
             flash("Please create an account!")
             return render_template("signup.html"), 400
-            #return "Please create an account!"
-        else:
-            flash("Invalid Password!")
-            return render_template("login.html"), 401
-    return 
+        flash("Invalid login!")
+        return render_template("login.html"), 401
 
 
 # new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
