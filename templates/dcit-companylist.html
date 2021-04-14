@@ -5,14 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MMI DCIT Company List </title>
     <link rel="stylesheet" href="../static/css/navigationbar.css">
+    <link rel="stylesheet" href="../static/css/card.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 </head>
 
 <style>
 
+      .container {
+       position: relative;
+       text-align: center;
+       color: white;
+    }
 
+    .top-left {
+      position: absolute;
+      top: 75px;
+      left: 185px;
+      z-index: 1;
+      font-size: 45px;
+    }
 
+      .student_card{
+      background-color:rgba(0, 105, 146, 0.1);
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      padding: 15px 15px;
+      width: 20%;
+      text-align: center;
+      margin-left: 50px;
+    }
+
+    .student_card.hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
 </style>
 
 <body>
@@ -31,21 +56,49 @@
     </nav>
     <br> <br> <br>
 
+    <div class="container">
+        <img src="../static/images/banner.png" height="185" width="100%" style="position: relative; z-index:-1;">
+        <div class="top-left"><b> List of Registered Companies </b></div>
+    </div>
+
+    <br> <br>
     <!--LIST OF REGISTERED COMPANIES CODE STARTS HERE -->
     <table action="/dcitCompanyList" method='GET'>
-         {% for company in registered_companies %}
-        <h1>Business Name: {{company.bname}}</h1>
-        <br>
-        <p> Amount of Interns Required: {{company.num_interns}}</p>
-        <br>
-        <p> Duration: {{company.duration}}</p>
-        <br>
-        <p> Credits: {{company.credits}}</p>
-        <br>
-        <p> Stipend: {{company.stipend}}</p>
+        {% for company in registered_companies %}
+        <!--<div class="row">
+            <div class="column"> -->
+                <div class="student_card">
+                    <h1>{{company.bname}}</h1>
+
+                    <p> Amount of Interns Required: {{company.num_interns}}</p>
+
+                    <p> Duration: {{company.duration}}</p>
+
+                    <p> Credits: {{company.credits}}</p>
+
+                    <p> Stipend: {{company.stipend}}</p>
+                </div>
+
+                <br> <br>
+         <!--   </div>
+        </div> -->
         {% endfor %}
     </table>
 
+        <!--
+         {% for company in registered_companies %}
+            <div class="student_card">
+                <h1>{{company.bname}}</h1>
+
+                <p> Amount of Interns Required: {{company.num_interns}}</p>
+
+                <p> Duration: {{company.duration}}</p>
+
+                <p> Credits: {{company.credits}}</p>
+
+                <p> Stipend: {{company.stipend}}</p>
+            </div>
+        {% endfor %} -->
 
 </body>
 
