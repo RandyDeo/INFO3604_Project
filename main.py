@@ -88,10 +88,9 @@ def signup():
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
-                #flash("Email address already exists")
-                #return render_template ("login.html"), 400
-                return 'Email address already exists', render_template("login.html"), 400
-        return
+                flash("Email address already exists")
+                #return render_template ("login.html"), 400               
+        return render_template("signup.html"), 401
 
 
 @app.route("/login", methods=(['GET', 'POST']))
@@ -113,11 +112,14 @@ def login():
                 return studentHome(), 200
             elif user.occupation == "DCIT":
                 return dcitHome(), 200
-        if user is None:
+        elif user is None:
             flash("Please create an account!")
             return render_template("signup.html"), 400
             #return "Please create an account!"
-    return "Invalid login", 401
+        else:
+            flash("Invalid Password!")
+            return render_template("login.html"), 401
+    return 
 
 
 # new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
@@ -164,12 +166,19 @@ def deadlines():
 
 
 # DCIT student profiles route
-@app.route("/dcitStudentProfiles", methods=(['GET']))
+@app.route("/dcitStudentProfiles", methods=(['GET', 'POST']))
 @login_required
 def dcitStudentProfiles():
-    asgs = Student.query.all()
-    report = ""
-    return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+    if request.method == 'GET':
+        s_list = Student.query.all()
+        c_list = parsed_courses.query.all()
+        return render_template("dcit-studentprofiles.html", student_list=s_list, course_list=c_list)
+
+    elif request.method == 'POST':
+        st_id = request.form.get('v_profile')
+        st_curr = Student.query.filter_by(uwiid=st_id).first()
+        c_list = parsed_courses.query.all()
+        return render_template("dcit-individualprofile.html", course_list=c_list, st_curr=st_curr)
 
 
 # DCIT Student Profiles Search Function works with IDs lol
@@ -195,10 +204,19 @@ def searchID():
 
 
 # DCIT weekly reports route
-@app.route("/dcitWeeklyReports", methods=(['GET']))
+@app.route("/dcitWeeklyReports", methods=(['GET', 'POST']))
 @login_required
 def dcitWeeklyReports():
-    return render_template("dcit-weeklyreports.html")
+    if request.method == 'GET':
+        s_list = Student.query.all()
+        reports = Report.query.all()
+        return render_template("dcit-weeklyreports.html", student_list=s_list, report_list=reports)
+
+    elif request.method == 'POST':
+        st_id = request.form.get('v_report')
+        st_curr = Student.query.filter_by(uwiid=st_id).first()
+        reports = Report.query.all()
+        return render_template("dcit-individualreports.html", report_list=reports, st_curr=st_curr)
 
 
 # DCIT company list route
@@ -338,9 +356,47 @@ def studentWeeklyReport():
 
 
 # Student Weekly Status Report route2 for iframe form
-@app.route("/displayStudentWeeklyReport")
+@app.route("/displayStudentWeeklyReport", methods=(['GET', 'POST']))
 def displayStudentWeeklyReport():
-    return render_template("student-weeklyreport-form.html")
+    if request.method == 'GET':
+        return render_template("student-weeklyreport-form.html")
+
+    elif request.method == 'POST':
+        student_id = request.form.get('s_id')
+        proj_name = request.form.get('pname')
+        date = request.form.get('date')
+        py_date = datetime.strptime(date, '%Y-%m-%d')
+        iteration = request.form.get('iteration_no')
+        imp_stat = request.form.get('impl_status')
+        highlts = request.form.get('highlights')
+
+        risk_name = request.form.get('risk')
+        risk_desc = request.form.get('description')
+        risk_res = request.form.get('resolution')
+        risk_status = request.form.get('risk_status')
+
+        task_name = request.form.get('task_name1')
+        task_desc = request.form.get('task_descript1')
+        task_member = request.form.get('team_member1')
+        task_comp = request.form.get('completed')
+
+        task_name_iter = request.form.get('task_name')
+        task_desc_iter = request.form.get('task_descript')
+        task_member_iter = request.form.get('team_member')
+
+        new_report = Report(rep_studentID=student_id, rep_proj_name=proj_name, date=py_date, iteration=iteration,
+                            status=imp_stat, highlights=highlts, risk_name=risk_name, risk_desc=risk_desc,
+                            risk_res=risk_res, risk_status=risk_status, task_name=task_name, task_desc=task_desc,
+                            task_member=task_member, task_comp=task_comp, task_name_iter=task_name_iter,
+                            task_desc_iter=task_desc_iter, task_member_iter=task_member_iter)
+
+        try:
+            db.session.add(new_report)
+            db.session.commit()
+            return render_template("student-homepage.html")
+        except IntegrityError:
+            return render_template("student-weeklyreport-form.html"), 400
+    return
 
 
 # Student Display Student form route
