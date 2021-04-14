@@ -4,14 +4,16 @@ from flask_login import login_user, LoginManager, login_required, logout_user, c
 from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import timedelta, datetime
+from datetime import timedelta
 from sqlalchemy import or_
 import collections
 import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Deadlines, Risk
+
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
+
 
 ''' Begin boilerplate code '''
 
@@ -36,7 +38,7 @@ login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def user_loader(email):
-    return User.query.get(email)  # review this// may result in error
+    return User.query.get(email)
 
 
 ''' End Boilerplate Code '''
@@ -50,7 +52,6 @@ def authenticate(email, password):
         return user
 
 
-# Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
     return models.User.query.get(payload['identity'])
 
@@ -111,9 +112,13 @@ def login():
             elif user.occupation == "DCIT":
                 return dcitHome(), 200
         if user is None:
-            return "Please create an account!"
-        return "Invalid login", 401
+            return "Please create an account!", signupPage()
+    return "Invalid login", 401
 
+
+# new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
+# db.session.add(new_admin)
+# db.session.commit()
 
 # DCIT ROUTES
 # DCIT homepage route
@@ -197,6 +202,81 @@ def dcitCompanyList():
     return render_template("dcit-companylist.html", registered_companies=asgs)
 
 
+# DCIT Intern List
+@app.route("/dcit-shortlist", methods=(['GET']))
+@login_required
+def dcitInternList():
+    businesses = Business.query.all()
+    Students = Student.query.all()
+
+    sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
+    # Counts
+    num_interns = 0
+
+    # Checks
+    l_check = False
+    db_check = False
+    de_check = False
+    temp = []
+
+    for business in businesses:
+
+        if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
+            continue
+
+        else:
+            internlist = []
+            i = 0  # Filtering for Fully Qualified
+            if sort[i].language == business.language:
+                l_check = True
+            if sort[i].dbms == business.dbms:
+                db_check = True
+            if sort[i].design == business.design:
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+                # Filtering for Overly Qualified
+            set1 = set(list(business.language))
+            set2 = set(sort[i].language)
+            set3 = set(list(business.dbms))
+            set4 = set(sort[i].dbms)
+            set5 = set(list(business.design))
+            set6 = set(sort[i].design)
+
+            if set1.issubset(set2):
+                l_check = True
+            if set3.issubset(set4):
+                db_check = True
+            if set5.issubset(set6):
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+                # Filtering for Barely Qualified
+            if set1.intersection(set2):
+                l_check = True
+            if set3.intersection(set4):
+                db_check = True
+            if set5.intersection(set6):
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                internlist.append(sort[i].name)
+                i = i + 1
+
+        print("Business Name: ", business.bname)
+        print(internlist)
+        temp.append(internlist)
+    temp.insert(0,'NULL')
+    num_interns = num_interns + 1
+    # if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
+    #   set(temp[1]).remove(set(temp[2]))
+    temps = []
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
+
+
 # DCIT get the company list route  - this is not necessary
 # If you calling a get function to the page - let it run whatever functions in the page one time -
 # DO NOT DO SEPARATE FUNCTIONS
@@ -258,7 +338,7 @@ class students:
             self.dbms = []
             self.language = []
 
-        def compare(self, studentID):
+        def compareList(self, studentID):
             student_courses = []
             student_id = studentID
             parsed_data_file = open("parsed_files/" + student_id + "_parsed.txt", "r")
@@ -281,7 +361,7 @@ class students:
                 if student_courses[i] == "comp2602":
                     language.append("Python")
                 elif student_courses[i] == "comp2603":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp2604":
                     language.append("C"), language.append("C++")
                 elif student_courses[i] == "comp2605":
@@ -294,14 +374,14 @@ class students:
                 elif student_courses[i] == "comp3605":
                     language.append("Python")
                 elif student_courses[i] == "comp3606":
-                    language.append("JAVA")
+                    language.append("Java")
                     design.append("Mobile")
                 elif student_courses[i] == "comp3607":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp3608":
                     language.append("MiniZinc"), language.append("Python")
                 elif student_courses[i] == "comp3609":
-                    language.append("JAVA")
+                    language.append("Java")
                 elif student_courses[i] == "comp3610":
                     language.append("SQL")
                     dbms.append("NoSQL")
@@ -358,7 +438,6 @@ class students:
             test.tech.dbms = dbms
             test.tech.language = language
 
-            print(language, design, dbms)
             return test
 
 
@@ -399,8 +478,8 @@ def displayStudentForm():
         parse_save.close()
 
         outer = students()
-        outer = outer.tech.compare(uwiid)
-        print(outer.tech.language, outer.tech.design, outer.tech.dbms)
+        outer = outer.tech.compareList(uwiid)
+        # print(outer.tech.language, outer.tech.design, outer.tech.dbms)
 
         if student is None and transcript.filename != '' and resume.filename != '' and essay.filename != '':
             parsed_data = open("parsed_files/" + uwiid + "_parsed.txt", "r")
@@ -584,16 +663,3 @@ def unauthorized():
 def logout():
     logout_user()
     return render_template('landing-page.html')
-
-# @app.route("/upload", methods=['POST'])
-# def upload():
-#   file = request.files['inputFile']
-
-#  newFile = FileContents(name=file.filename, data=file.read())
-# db.session.add(newFile)
-# db.session.commit()
-
-# return 'Saved ' + file.filename + ' to the database!'
-
-
-# @app.route("/register", methods=(['POST']))
