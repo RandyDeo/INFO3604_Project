@@ -10,8 +10,7 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, \
-    Deadlines
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
 
 ''' Begin boilerplate code '''
 
@@ -36,7 +35,7 @@ login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def user_loader(email):
-    return User.query.get(email)
+    return User.query.get(email)  # review this// may result in error
 
 
 ''' End Boilerplate Code '''
@@ -50,6 +49,7 @@ def authenticate(email, password):
         return user
 
 
+# Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
     return models.User.query.get(payload['identity'])
 
@@ -114,10 +114,6 @@ def login():
     return "Invalid login", 401
 
 
-# new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
-# db.session.add(new_admin)
-# db.session.commit()
-
 # DCIT ROUTES
 # DCIT homepage route
 @app.route("/dcitHome", methods=(['GET']))
@@ -127,10 +123,33 @@ def dcitHome():
 
 
 # DCIT deadlines route
-@app.route("/deadlines", methods=(['GET']))
+@app.route("/deadlines", methods=(['GET', 'POST']))
 @login_required
 def deadlines():
-    return render_template("dcit-deadlines.html")
+    if request.method == 'GET':
+        return render_template("dcit-deadlines.html")
+
+    elif request.method == 'POST':
+        deadline_message = request.form.get('deadline')
+        deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
+        admin = User.query.filter_by(occupation="DCIT").first()
+
+
+        new_admin = DCITAdmin(aname=admin.name, aemail=admin.email)
+        db.session.add(new_admin)
+        db.session.commit()
+
+        if deadline is None:
+                new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
+                new_deadline.date = datetime.now()
+        try:
+                db.session.add(new_deadline)
+                db.session.commit()
+                return redirect(url_for('deadlines'))
+        except IntegrityError:
+                db.session.rollback()
+                return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
+    return
 
 
 # DCIT student profiles route
@@ -138,7 +157,28 @@ def deadlines():
 @login_required
 def dcitStudentProfiles():
     asgs = Student.query.all()
-    return render_template("dcit-studentprofiles.html", student_list=asgs)
+    report = ""
+    return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+
+
+# DCIT Student Profiles Search Function works with IDs lol
+@app.route("/dcitStudentProfiles", methods=(['POST']))
+@login_required
+def searchID():
+    if request.method == 'POST':
+        entry = request.form.to_dict()
+        key = entry['keyword']
+        print(key)
+        searchkey = "%{}%".format(key)
+        asgs = Student.query.filter(Student.uwiid.like(searchkey)).all()
+        # asgs = Student.query.filter(Student.name.like(searchkey)).all()
+        if asgs:
+            report = ""
+            return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+        else:
+            report = "No student found."
+            return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+    return error(), 400
 
 
 # DCIT weekly reports route
@@ -392,6 +432,7 @@ class students:
             test.tech.dbms = dbms
             test.tech.language = language
 
+            print(language, design, dbms)
             return test
 
 
@@ -602,6 +643,11 @@ def displayBusinessForm():
     return
 
 
+@app.route("/oops")
+def error():
+    return render_template("error.html")
+
+
 @login_manager.unauthorized_handler
 def unauthorized():
     return render_template('signup.html')
@@ -612,3 +658,16 @@ def unauthorized():
 def logout():
     logout_user()
     return render_template('landing-page.html')
+
+# @app.route("/upload", methods=['POST'])
+# def upload():
+#   file = request.files['inputFile']
+
+#  newFile = FileContents(name=file.filename, data=file.read())
+# db.session.add(newFile)
+# db.session.commit()
+
+# return 'Saved ' + file.filename + ' to the database!'
+
+
+# @app.route("/register", methods=(['POST']))

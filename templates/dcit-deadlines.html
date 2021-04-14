@@ -10,11 +10,41 @@
 </head>
 
 <style>
+      .container {
+      position: relative;
+      text-align: center;
+      color: white;
+    }
 
+    .top-left {
+      position: absolute;
+      z-index: 1;
+    }
+
+    .student_card{
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        padding: 15px 15px;
+        width: 40%;
+        height: 315px;
+        text-align: center;
+        border-radius: 15px;
+        margin: auto;
+    }
+
+    .student_card.hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    button{
+        border-radius: 20px;
+        height: 45px;
+        width: 150px;
+
+    }
 
 </style>
 
-<body>
+<body class="background">
     <nav class="navbar navbar-inverse" style="z-index:2;">
         <div class="container-fluid">
             <ul class="nav navbar-nav">
@@ -28,7 +58,34 @@
             </ul>
         </div>
     </nav>
+
     <br> <br> <br>
+    <div class="container">
+        <img src="../static/images/banner.png" height="185" width="100%" style="position: relative; z-index:-1;">
+        <div class="top-left" style="font-size: 45px; top:75px; left: 185px;"><b> Post a Deadline </b></div>
+    </div>
+    <br> <br>
+
+    <div>
+       <form action="/deadlines" method="POST">
+          <div class="student_card">
+              <h3> Share deadlines with students </h3>
+              <div class="profile_image"> <img src="../static/images/avatar.jpg" width="80px" height="80px" style="float:left">
+                  <textarea id ="deadline" name= "deadline" rows="10" cols="65" placeholder="Enter your deadline"></textarea>
+              </div>
+              <button type="submit" style="float: right;"> Post Deadline </button>
+          </div>
+
+        </form>
+    </div>
+
+    <!--
+    <br> <br>
+    <div style="margin-left: 395px;">
+        <button> Add another deadline </button>
+    </div> -->
+
+
 
 </body>
 
