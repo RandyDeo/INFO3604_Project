@@ -1,10 +1,10 @@
 import json
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import timedelta
+from datetime import timedelta, datetime
 from sqlalchemy import or_
 import collections
 import os
@@ -88,6 +88,8 @@ def signup():
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
+                #flash("Email address already exists")
+                #return render_template ("login.html"), 400
                 return 'Email address already exists', render_template("login.html"), 400
         return
 
@@ -112,7 +114,9 @@ def login():
             elif user.occupation == "DCIT":
                 return dcitHome(), 200
         if user is None:
-            return "Please create an account!", signupPage()
+            flash("Please create an account!")
+            return render_template("signup.html"), 400
+            #return "Please create an account!"
     return "Invalid login", 401
 
 
@@ -151,6 +155,7 @@ def deadlines():
         try:
                 db.session.add(new_deadline)
                 db.session.commit()
+                flash ("Deadline has been posted!")
                 return redirect(url_for('deadlines'))
         except IntegrityError:
                 db.session.rollback()
@@ -182,8 +187,10 @@ def searchID():
             report = ""
             return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
         else:
-            report = "No student found."
-            return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+            #report = "No student found."
+            flash("No student found!")
+            #return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+            return render_template("dcit-studentprofiles.html")
     return error(), 400
 
 
@@ -309,8 +316,17 @@ def studentInternship():
     return render_template("student-internships.html")
 
 
+# Student View Deadlines Route
+@app.route("/studentDeadlines", methods=(['GET']))
+@login_required
+def studentDeadlines():
+    asgs = Deadlines.query.all()
+    #asgs = Deadlines.query.filter_by(adminID)
+    return render_template("student-deadlines.html", deadlines=asgs)
+
 # Student Registration route
 @app.route("/studentRegistration")
+@login_required
 def studentRegistration():
     return render_template("student-registration.html")
 
@@ -642,7 +658,8 @@ def displayBusinessForm():
             try:
                 db.session.add(new_internship)
                 db.session.commit()
-                return render_template('business-homepage.html')
+                #return render_template('business-homepage.html')
+                return redirect(url_for('displayBusinessForm'))
             except IntegrityError:
                 return 'Application does not exist', render_template("business-registration.html"), 400
     return
