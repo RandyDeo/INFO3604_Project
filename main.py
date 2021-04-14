@@ -5,12 +5,15 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
+from sqlalchemy import or_
 import collections
 import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCIT_Admin, Risk
+
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
+
 
 ''' Begin boilerplate code '''
 
@@ -35,7 +38,7 @@ login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def user_loader(email):
-    return User.query.get(email)  # review this// may result in error
+    return User.query.get(email)
 
 
 ''' End Boilerplate Code '''
@@ -49,7 +52,6 @@ def authenticate(email, password):
         return user
 
 
-# Payload is a dictionary which is passed to the function by Flask JWT
 def identity(payload):
     return models.User.query.get(payload['identity'])
 
@@ -113,6 +115,10 @@ def login():
             return "Please create an account!", signupPage()
     return "Invalid login", 401
 
+
+# new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
+# db.session.add(new_admin)
+# db.session.commit()
 
 # DCIT ROUTES
 # DCIT homepage route
@@ -432,7 +438,6 @@ class students:
             test.tech.dbms = dbms
             test.tech.language = language
 
-            print(language, design, dbms)
             return test
 
 
@@ -658,16 +663,3 @@ def unauthorized():
 def logout():
     logout_user()
     return render_template('landing-page.html')
-
-# @app.route("/upload", methods=['POST'])
-# def upload():
-#   file = request.files['inputFile']
-
-#  newFile = FileContents(name=file.filename, data=file.read())
-# db.session.add(newFile)
-# db.session.commit()
-
-# return 'Saved ' + file.filename + ' to the database!'
-
-
-# @app.route("/register", methods=(['POST']))
