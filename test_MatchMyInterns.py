@@ -21,8 +21,7 @@ class MatchMyInternsTest(unittest.TestCase):
             data=dict(email='rdydeo@gmail.com', passw='password'),
             follow_redirects=True
         )
-        self.assertIn(b'Invalid Email, Please create an account!',
-                      response.data)
+        self.assertEqual(response.status_code, 400)
 
     def test_wrong_password(self):
         test = app.test_client(self)
@@ -31,15 +30,14 @@ class MatchMyInternsTest(unittest.TestCase):
             data=dict(email='randydeo@gmail.com', passw='passw'),
             follow_redirects=True
         )
-        self.assertIn(b'Invalid Password!',
-                      response.data)
+        self.assertEqual(response.status_code, 401)
 
 #It saves the email in db, so if you run twice with same email, it will fail. PUT NEW EMAIL FOR EACH RUN
     def test_valid_signup(self):
         test = app.test_client(self)
         response = test.post(
             '/signup',
-            data=dict(email='7@gmail.com', name="John Doe", occupation="Student", passw='password'),
+            data=dict(email='1@gmail.com', name="John Doe", occupation="Student", passw='password'),
             follow_redirects=True
         )
         self.assertEqual(response.status_code, 201)
@@ -52,4 +50,6 @@ class MatchMyInternsTest(unittest.TestCase):
             follow_redirects=True
         )
         self.assertEqual(response.status_code, 401)
+
+    
 
