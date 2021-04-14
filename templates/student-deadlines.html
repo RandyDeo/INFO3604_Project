@@ -30,7 +30,7 @@
     {% for deadline in deadlines %}
         <div class="student_card">
             <p>{{deadline.deadline_message}}</p>
-            <p> Posted on {{deadline.date}} </p>
+            <p> Posted on {{deadline.date}} by {{deadline.deadline_adminID}} </p>
         </div>
     {% endfor %}
 </body>
