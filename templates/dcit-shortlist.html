@@ -36,11 +36,12 @@
 
 
             {% for business in businesses %}
-                        <br>
-                        <p>Business Name: {{business.bname}}</p>
-                        <p>Stipend: ${{business.stipend}}</p>
-                        <p>List of Interns: {{temps[business.businessID]}}</p>
-                        <br>
+                <br>
+                <p>Business Name: {{business.bname}}</p>
+
+                 {% for intern in interns
+
+
 
             {% endfor %}
 

@@ -11,9 +11,7 @@ import os
 import requests
 import json
 
-
 from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Shortlist, Deadlines
-
 
 ''' Begin boilerplate code '''
 
@@ -89,7 +87,7 @@ def signup():
             except IntegrityError:
                 db.session.rollback()
                 flash("Email address already exists")
-                #return render_template ("login.html"), 400
+                # return render_template ("login.html"), 400
         return render_template("signup.html"), 401
 
 
@@ -143,22 +141,21 @@ def deadlines():
         deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
         admin = User.query.filter_by(occupation="DCIT").first()
 
-
         new_admin = DCITAdmin(aname=admin.name, aemail=admin.email)
         db.session.add(new_admin)
         db.session.commit()
 
         if deadline is None:
-                new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-                new_deadline.date = datetime.now()
+            new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
+            new_deadline.date = datetime.now()
         try:
-                db.session.add(new_deadline)
-                db.session.commit()
-                flash ("Deadline has been posted!")
-                return redirect(url_for('deadlines'))
+            db.session.add(new_deadline)
+            db.session.commit()
+            flash("Deadline has been posted!")
+            return redirect(url_for('deadlines'))
         except IntegrityError:
-                db.session.rollback()
-                return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
+            db.session.rollback()
+            return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
     return
 
 
@@ -193,9 +190,9 @@ def searchID():
             report = ""
             return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
         else:
-            #report = "No student found."
+            # report = "No student found."
             flash("No student found!")
-            #return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+            # return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
             return render_template("dcit-studentprofiles.html")
     return error(), 400
 
@@ -225,93 +222,95 @@ def dcitCompanyList():
 
 
 # DCIT Intern List
-#@app.route("/dcit-shortlist", methods=(['GET']))
-#@login_required
-#def dcitInternList():
+@app.route("/dcit-shortlist", methods=(['GET']))
+@login_required
+def dcitInternList():
+    businesses = Business.query.all()
+    student = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
+    internships = Internship.query.all()
+    studnts = Student.query.all()
+    # Counts
+    num_interns = 0
+    # Checks
+    l_check = False
+    db_check = False
+    de_check = False
 
-businesses = Business.query.all()
-Students = Student.query.all()
+    temp = []
 
-sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
-
-# Counts
-num_interns = 0
-
-# Checks
-l_check = False
-db_check = False
-de_check = False
-temp = []
-
-for business in businesses:
-
-    if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
-        continue
-
-    else:
-        internlist = []
-        i = 0  # Filtering for Fully Qualified
-
-        if sort[i].language == business.language:
-            l_check = True
-        if sort[i].dbms == business.dbms:
-            db_check = True
-        if sort[i].design == business.design:
-            de_check = True
-        if l_check == True & db_check == True & de_check == True:
-            internlist.append(sort[i].name)
-            i = i + 1
-
-                                     # Filtering for Overly Qualified
-        set1 = set(list(business.language))
-        set2 = set(sort[i].language)
-        set3 = set(list(business.dbms))
-        set4 = set(sort[i].dbms)
-        set5 = set(list(business.design))
-        set6 = set(sort[i].design)
-
-        if set1.issubset(set2):
+    for business in businesses:
+        if num_interns < business.num_interns:  # Move on to the next company if number of required interns is met
+            internlist = []
+            i = 0
+            # Filtering for Fully Qualified
+            if student[i].language == business.language:
                 l_check = True
-        if set3.issubset(set4):
+            if student[i].dbms == business.dbms:
                 db_check = True
-        if set5.issubset(set6):
+            if student[i].design == business.design:
                 de_check = True
-        if l_check == True & db_check == True & de_check == True:
-                internlist.append(sort[i].name)
+            if l_check == True & db_check == True & de_check == True:
+                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
+                                       companyID=business.businessID,
+                                       company_name=business.bname,
+                                       proj_name=internships[business.businessID].proj_name)
+                db.session.add(new_intern)
+                db.session.commit()
+                internlist.append(student[i].name)
+                i = i + 1
+            # Filtering for Overly Qualified
+
+            set1 = set(list(business.language))
+            set2 = set(student[i].language)
+            set3 = set(list(business.dbms))
+            set4 = set(student[i].dbms)
+            set5 = set(list(business.design))
+            set6 = set(student[i].design)
+
+            if set1.issubset(set2):
+                l_check = True
+            if set3.issubset(set4):
+                db_check = True
+            if set5.issubset(set6):
+                de_check = True
+            if l_check == True & db_check == True & de_check == True:
+                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
+                                       companyID=business.businessID,
+                                       company_name=business.bname,
+                                       proj_name=internships[business.businessID].proj_name)
+                db.session.add(new_intern)
+                db.session.commit()
+                internlist.append(student[i].name)
                 i = i + 1
 
-                # Filtering for Barely Qualified
-        if set1.intersection(set2):
+            # Filtering for Barely Qualified
+            if set1.intersection(set2):
                 l_check = True
-        if set3.intersection(set4):
+            if set3.intersection(set4):
                 db_check = True
-        if set5.intersection(set6):
+            if set5.intersection(set6):
                 de_check = True
-        if l_check == True & db_check == True & de_check == True:
-                internlist.append(sort[i].name)
+            if l_check == True & db_check == True & de_check == True:
+                new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
+                                       companyID=business.businessID,
+                                       company_name=business.bname,
+                                       proj_name=internships[business.businessID].proj_name)
+                db.session.add(new_intern)
+                db.session.commit()
+                internlist.append(student[i].name)
                 i = i + 1
+        else:
+            continue
+        # print("Business Name: ", business.bname)
+        # print(internlist)
+        num_interns = num_interns + 1
 
-    print(len(internlist))
-    print("Business Name: ", business.bname)
-    print(internlist)
-    temp.append(internlist)
-    temp.insert(0,'NULL')
+        temp.append(internlist)
+        temp.insert(0, 'NULL')
+        temps = []
 
-    num_interns = num_interns + 1
-if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
-       set(temp[1]).remove(set(temp[2]))
-    #return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
-
-
-# DCIT get the company list route  - this is not necessary
-# If you calling a get function to the page - let it run whatever functions in the page one time -
-# DO NOT DO SEPARATE FUNCTIONS
-# @app.route("/displayCompanyList", methods=(['GET']))
-# @login_required
-# def displayCompanyList():
-#   asgs = Business.query.all()
-#  return render_template("dcit-companylist.html", registered_companies=asgs)
-
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, internships=interns,
+                           studnts=students)
 
 # STUDENT ROUTES
 # Student home route
@@ -340,8 +339,9 @@ def studentInternship():
 @login_required
 def studentDeadlines():
     asgs = Deadlines.query.all()
-    #asgs = Deadlines.query.filter_by(adminID)
+    # asgs = Deadlines.query.filter_by(adminID)
     return render_template("student-deadlines.html", deadlines=asgs)
+
 
 # Student Registration route
 @app.route("/studentRegistration")
@@ -715,7 +715,7 @@ def displayBusinessForm():
             try:
                 db.session.add(new_internship)
                 db.session.commit()
-                #return render_template('business-homepage.html')
+                # return render_template('business-homepage.html')
                 return redirect(url_for('displayBusinessForm'))
             except IntegrityError:
                 return 'Application does not exist', render_template("business-registration.html"), 400
