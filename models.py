@@ -175,12 +175,26 @@ class Deadlines(db.Model, UserMixin, ):
 
 class Report(db.Model, UserMixin):
     reportID = db.Column(db.Integer, primary_key=True)
-    rep_proj_name = db.Column(db.String(120), db.ForeignKey('internship.proj_name'), nullable=False)
-    rep_studentID = db.Column(db.Integer, db.ForeignKey('student.uwiid'), nullable=False)
+    rep_studentID = db.Column(db.Integer, nullable=False)
+    rep_proj_name = db.Column(db.String(120), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     iteration = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(120), nullable=False)
-    date_entered = db.Column(db.DateTime, nullable=False)
+    highlights = db.Column(db.String(500), nullable=False)
+
+    risk_name = db.Column(db.String(300), nullable=False)
+    risk_desc = db.Column(db.String(300), nullable=False)
+    risk_res = db.Column(db.String(300), nullable=False)
+    risk_status = db.Column(db.String(300), nullable=False)
+
+    task_name = db.Column(db.String(300), nullable=False)
+    task_desc = db.Column(db.String(300), nullable=False)
+    task_member = db.Column(db.String(300), nullable=True)
+    task_comp = db.Column(db.Integer, nullable=False)
+
+    task_name_iter = db.Column(db.String(300), nullable=False)
+    task_desc_iter = db.Column(db.String(300), nullable=False)
+    task_member_iter = db.Column(db.String(300), nullable=True)
 
     def toDict(self):
         return {
@@ -190,39 +204,21 @@ class Report(db.Model, UserMixin):
             "Date": self.date,
             "Iteration": self.iteration,
             "Status": self.status,
-            "Date Entered": self.date_entered
-        }
+            "Highlights": self.highlights,
 
+            "Risk": self.risk_name,
+            "Risk Description": self.risk_desc,
+            "Risk Resolution": self.risk_res,
+            "Risk_status": self.risk_status,
 
-class Risk(db.Model, UserMixin):
-    riskID = db.Column(db.Integer, primary_key=True)
-    risk_des = db.Column(db.String(300), nullable=False)
-    risk_status = db.Column(db.String(300), nullable=False)
-    risk_repID = db.Column(db.Integer, db.ForeignKey('report.reportID'), nullable=False)
+            "Task Name": self.task_name,
+            "Task Description": self.task_desc,
+            "Task Member Responsible": self.task_member,
+            "Task Completion": self.task_comp,
 
-    def toDict(self):
-        return {
-            "Risk ID": self.riskID,
-            "Risk Description": self.risk_des,
-            "Risk Status": self.risk_status,
-            "Report ID": self.risk_repID
-        }
-
-
-class Task(db.Model, UserMixin, ):
-    taskID = db.Column(db.Integer, primary_key=True)
-    task_des = db.Column(db.String(300), nullable=False)
-    task_member = db.Column(db.String(300), nullable=False)
-    task_complete = db.Column(db.Integer, nullable=True)
-    task_repID = db.Column(db.Integer, db.ForeignKey('report.reportID'), nullable=False)
-
-    def toDict(self):
-        return {
-            "Task ID": self.taskID,
-            "Task Description": self.task_des,
-            "Task Member": self.task_member,
-            "Percentage Completed": self.task_complete,
-            "Report ID": self.task_repID
+            "Task Name Iteration": self.task_name_iter,
+            "Task Description Iteration": self.task_desc_iter,
+            "Task Member Iteration": self.task_member_iter
         }
 
 

@@ -14,7 +14,6 @@
 
 <style>
 
-
 </style>
 
 <body>
@@ -28,7 +27,13 @@
         </div>
     </nav>
     <br> <br> <br>
-    <br> <br> <br>
+    <br> <br>
+
+    {% for message in get_flashed_messages() %}
+        <div class="alert-error"> Error: {{ message }} </div>
+    {% endfor %}
+
+    <br> <br>
 
     <div class="cont">
     <div class="form">
@@ -50,7 +55,7 @@
                     <div class = "shift-left">
                     <label>
                         <div data-validate = "Password is required">
-                            <input type="password"  name="pass" id="log_password" placeholder="Enter your password" />
+                            <input type="password"  name="passw" id="log_password" placeholder="Enter your password" />
                         </div>
                     </label>
                     </div>
