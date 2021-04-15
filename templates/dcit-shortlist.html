@@ -10,8 +10,33 @@
 </head>
 
 <style>
+    .student_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    float: left;
+    width: 20%;
+    padding: 15px;
+    text-align: center;
+    margin-left: 30px;
+    }
 
+    .student_card.hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
 
+    img {
+      border-radius: 50%;
+    }
+
+     button{
+        border-radius: 20px;
+        height: 45px;
+        width: 150px;
+
+    }
+
+    .businessName{
+        margin-bottom: 390px;
+    }
 
 </style>
 
@@ -30,22 +55,38 @@
         </div>
     </nav>
     <br> <br> <br>
-
+    <br>
     <!--LIST OF SHORTLIST CODE STARTS HERE -->
     <table action="/dcit-shortlist" method='GET'>
-
-
             {% for business in businesses %}
-                        <br>
-                        <p>Business Name: {{business.bname}}</p>
-                        <p>Stipend: ${{business.stipend}}</p>
-                        <p>List of Interns: {{temps[business.businessID]}}</p>
-                        <br>
+                <br>
+                <div class="businessName">
+                    <h1>{{business.bname}}</h1>
+
+
+                <div class="intern_info">
+                    {% for student in temps[business.businessID] %}
+                        <div class="student_card">
+                            <p> Intern Name : {{ student }}</p>
+                            <!--<p> Student ID: {{student.uwiid}}</p> -->
+                            <p> Student ID: </p>
+                            <p> Student GPA: </p>
+                            <button> Remove intern </button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div>
+                    <form class="pure-form">
+                        <input type="intern_name" id="intern_name" placeholder="Enter a new intern" />
+                        <button> Add a new intern </button>
+                    </form>
+                </div>
+
+                </div>
 
             {% endfor %}
-
+     <br> <br> <br>
     </table>
-
 
 </body>
 
