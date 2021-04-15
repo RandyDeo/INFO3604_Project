@@ -5,13 +5,14 @@ from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta, datetime
-from sqlalchemy import or_
 import collections
 import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Shortlist, Deadlines
+
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
+
 
 ''' Begin boilerplate code '''
 
@@ -59,6 +60,7 @@ jwt = JWT(app, authenticate, identity)
 ''' End JWT Setup '''
 
 
+
 @app.route("/")
 def home():
     return render_template("landing-page.html")
@@ -75,7 +77,7 @@ def signup():
         email = request.form.get('email')
         name = request.form.get('name')
         occupation = request.form.get('occupation')
-        password = request.form.get('passw')
+        password = request.form.get('pass')
         user = User.query.filter_by(email=email).first()
         if user is None:
             new_user = User(name=name, email=email, occupation=occupation)
@@ -86,9 +88,10 @@ def signup():
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
-                flash("Email address already exists")
+                #flash("Email address already exists")
                 #return render_template ("login.html"), 400
-        return render_template("signup.html"), 401
+                return 'Email address already exists', render_template("login.html"), 400
+        return
 
 
 @app.route("/login", methods=(['GET', 'POST']))
@@ -98,23 +101,24 @@ def login():
 
     elif request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('passw')
+        password = request.form.get('pass')
 
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            if user.occupation == "Business" or user.occupation == "business":
+            if user.occupation == "Business":
                 return businessHome(), 200
-            if user.occupation == "Student" or user.occupation == "student":
+            if user.occupation == "Student":
                 return studentHome(), 200
-            elif user.occupation == "DCIT" or user.occupation == "dcit":
+            elif user.occupation == "DCIT":
                 return dcitHome(), 200
-        elif user is None:
+        if user is None:
             flash("Please create an account!")
             return render_template("signup.html"), 400
-        flash("Invalid login!")
-        return render_template("login.html"), 401
+            #return "Please create an account!"
+    flash("Invalid login!")
+    return render_template("login.html"), 401
 
 
 # new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
@@ -147,10 +151,8 @@ def deadlines():
         db.session.commit()
 
         if deadline is None:
-                curr_date = datetime.now()
                 new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-                new_deadline.date = curr_date.date()
-
+                new_deadline.date = datetime.now()
         try:
                 db.session.add(new_deadline)
                 db.session.commit()
@@ -163,23 +165,16 @@ def deadlines():
 
 
 # DCIT student profiles route
-@app.route("/dcitStudentProfiles", methods=(['GET', 'POST']))
+@app.route("/dcitStudentProfiles", methods=(['GET']))
 @login_required
 def dcitStudentProfiles():
-    if request.method == 'GET':
-        s_list = Student.query.all()
-        c_list = parsed_courses.query.all()
-        return render_template("dcit-studentprofiles.html", student_list=s_list, course_list=c_list)
-
-    elif request.method == 'POST':
-        st_id = request.form.get('v_profile')
-        st_curr = Student.query.filter_by(uwiid=st_id).first()
-        c_list = parsed_courses.query.all()
-        return render_template("dcit-individualprofile.html", course_list=c_list, st_curr=st_curr)
+    asgs = Student.query.all()
+    report = ""
+    return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
 
 
 # DCIT Student Profiles Search Function works with IDs lol
-@app.route("/dcitStudentProfiles1", methods=(['POST']))
+@app.route("/dcitStudentProfiles", methods=(['POST']))
 @login_required
 def searchID():
     if request.method == 'POST':
@@ -201,19 +196,10 @@ def searchID():
 
 
 # DCIT weekly reports route
-@app.route("/dcitWeeklyReports", methods=(['GET', 'POST']))
+@app.route("/dcitWeeklyReports", methods=(['GET']))
 @login_required
 def dcitWeeklyReports():
-    if request.method == 'GET':
-        s_list = Student.query.all()
-        reports = Report.query.all()
-        return render_template("dcit-weeklyreports.html", student_list=s_list, report_list=reports)
-
-    elif request.method == 'POST':
-        st_id = request.form.get('v_report')
-        st_curr = Student.query.filter_by(uwiid=st_id).first()
-        reports = Report.query.all()
-        return render_template("dcit-individualreports.html", report_list=reports, st_curr=st_curr)
+    return render_template("dcit-weeklyreports.html")
 
 
 # DCIT company list route
@@ -229,46 +215,43 @@ def dcitCompanyList():
 @login_required
 def dcitInternList():
     businesses = Business.query.all()
-    student = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
-    internships = Internship.query.all()
-    studnts = Student.query.all()
+    Students = Student.query.all()
+
+    sort = Student.query.order_by(Student.gpa.desc()).all()  # Filter for best student - sorts by GPA
     # Counts
     num_interns = 0
+
     # Checks
     l_check = False
     db_check = False
     de_check = False
-
     temp = []
 
     for business in businesses:
-        if num_interns < business.num_interns:  # Move on to the next company if number of required interns is met
+
+        if num_interns > business.num_interns:  # Move on to the next company if number of required interns is meet
+            continue
+
+        else:
             internlist = []
-            i = 0
-            # Filtering for Fully Qualified
-            if student[i].language == business.language:
+            i = 0  # Filtering for Fully Qualified
+            if sort[i].language == business.language:
                 l_check = True
-            if student[i].dbms == business.dbms:
+            if sort[i].dbms == business.dbms:
                 db_check = True
-            if student[i].design == business.design:
+            if sort[i].design == business.design:
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
-                                       companyID=business.businessID,
-                                       company_name=business.bname,
-                                       proj_name=internships[business.businessID].proj_name)
-                db.session.add(new_intern)
-                db.session.commit()
-                internlist.append(student[i].name)
+                internlist.append(sort[i].name)
                 i = i + 1
-            # Filtering for Overly Qualified
 
+                # Filtering for Overly Qualified
             set1 = set(list(business.language))
-            set2 = set(student[i].language)
+            set2 = set(sort[i].language)
             set3 = set(list(business.dbms))
-            set4 = set(student[i].dbms)
+            set4 = set(sort[i].dbms)
             set5 = set(list(business.design))
-            set6 = set(student[i].design)
+            set6 = set(sort[i].design)
 
             if set1.issubset(set2):
                 l_check = True
@@ -277,16 +260,10 @@ def dcitInternList():
             if set5.issubset(set6):
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
-                                       companyID=business.businessID,
-                                       company_name=business.bname,
-                                       proj_name=internships[business.businessID].proj_name)
-                db.session.add(new_intern)
-                db.session.commit()
-                internlist.append(student[i].name)
+                internlist.append(sort[i].name)
                 i = i + 1
 
-            # Filtering for Barely Qualified
+                # Filtering for Barely Qualified
             if set1.intersection(set2):
                 l_check = True
             if set3.intersection(set4):
@@ -294,26 +271,40 @@ def dcitInternList():
             if set5.intersection(set6):
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
-                                       companyID=business.businessID,
-                                       company_name=business.bname,
-                                       proj_name=internships[business.businessID - 1].proj_name)
-                db.session.add(new_intern)
-                db.session.commit()
-                internlist.append(student[i].name)
+                internlist.append(sort[i].name)
                 i = i + 1
-        else:
-            continue
-        # print("Business Name: ", business.bname)
-        # print(internlist)
-        num_interns = num_interns + 1
 
+        print("Business Name: ", business.bname)
+        print(internlist)
         temp.append(internlist)
-        temp.insert(0, 'NULL')
-        temps = []
+    temp.insert(0,'NULL')
+    num_interns = num_interns + 1
+    # if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
+    #   set(temp[1]).remove(set(temp[2]))
+    temps = []
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
 
-    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, interns=internships,
-                           studnts=students)
+
+# DCIT Intern List - Remove
+@app.route("/dcit-shortlist/<internID>", methods=(['DELETE']))
+@login_required
+def deleteIntern(internID):
+    deleted_intern = Shortlist.query.filter_by(internID).first()
+    if deleted_intern == None:
+        flash("Invalid id")
+    db.session.delete(deleted_intern)
+    db.session.commit()
+    return 'Deleted intern from this internship', 204
+
+
+# DCIT Intern List - Add
+#@app.route("/dcit-shortlist/<internID>", methods=(['PUT']))
+#@login_required
+#def addIntern(internID):
+    #new_intern = Shortlist.query.filter_by(internID).first()
+    #if new_intern ==None:
+        #flash ("Invalid id")
+
 
 # STUDENT ROUTES
 # Student home route
@@ -342,9 +333,8 @@ def studentInternship():
 @login_required
 def studentDeadlines():
     asgs = Deadlines.query.all()
-    admin_list = DCITAdmin.query.all()
-    return render_template("student-deadlines.html", deadlines=asgs, admin_list=admin_list)
-
+    #asgs = Deadlines.query.filter_by(adminID)
+    return render_template("student-deadlines.html", deadlines=asgs)
 
 # Student Registration route
 @app.route("/studentRegistration")
@@ -360,47 +350,9 @@ def studentWeeklyReport():
 
 
 # Student Weekly Status Report route2 for iframe form
-@app.route("/displayStudentWeeklyReport", methods=(['GET', 'POST']))
+@app.route("/displayStudentWeeklyReport")
 def displayStudentWeeklyReport():
-    if request.method == 'GET':
-        return render_template("student-weeklyreport-form.html")
-
-    elif request.method == 'POST':
-        student_id = request.form.get('s_id')
-        proj_name = request.form.get('pname')
-        date = request.form.get('date')
-        py_date = datetime.strptime(date, '%Y-%m-%d')
-        iteration = request.form.get('iteration_no')
-        imp_stat = request.form.get('impl_status')
-        highlts = request.form.get('highlights')
-
-        risk_name = request.form.get('risk')
-        risk_desc = request.form.get('description')
-        risk_res = request.form.get('resolution')
-        risk_status = request.form.get('risk_status')
-
-        task_name = request.form.get('task_name1')
-        task_desc = request.form.get('task_descript1')
-        task_member = request.form.get('team_member1')
-        task_comp = request.form.get('completed')
-
-        task_name_iter = request.form.get('task_name')
-        task_desc_iter = request.form.get('task_descript')
-        task_member_iter = request.form.get('team_member')
-
-        new_report = Report(rep_studentID=student_id, rep_proj_name=proj_name, date=py_date, iteration=iteration,
-                            status=imp_stat, highlights=highlts, risk_name=risk_name, risk_desc=risk_desc,
-                            risk_res=risk_res, risk_status=risk_status, task_name=task_name, task_desc=task_desc,
-                            task_member=task_member, task_comp=task_comp, task_name_iter=task_name_iter,
-                            task_desc_iter=task_desc_iter, task_member_iter=task_member_iter)
-
-        try:
-            db.session.add(new_report)
-            db.session.commit()
-            return render_template("student-homepage.html")
-        except IntegrityError:
-            return render_template("student-weeklyreport-form.html"), 400
-    return
+    return render_template("student-weeklyreport-form.html")
 
 
 # Student Display Student form route
@@ -718,7 +670,7 @@ def displayBusinessForm():
             try:
                 db.session.add(new_internship)
                 db.session.commit()
-                # return render_template('business-homepage.html')
+                #return render_template('business-homepage.html')
                 return redirect(url_for('displayBusinessForm'))
             except IntegrityError:
                 return 'Application does not exist', render_template("business-registration.html"), 400

@@ -29,44 +29,6 @@
         </div>
     </nav>
     <br> <br> <br>
-<br> <br> <br>
-
-     <div>
-        <h2>Student Name: {{st_curr.name}}</h2>
-        <h2>Student ID: {{st_curr.uwiid}}</h2>
-     </div>
-
-    {% for report in report_list %}
-        {% if report.rep_studentID == st_curr.uwiid %}
-            <div class="individual_card">
-                <p>Report ID: {{report.reportID}}</p>
-                <p>Date: {{report.date}}</p>
-                <br>
-                <h3>Project Details</h3>
-                <p>Project Name: {{report.rep_proj_name}}</p>
-                <p>Current Iteration: {{report.iteration}}</p>
-                <p>Status: {{report.status}}</p>
-                <p>Highlights: {{report.highlights}}</p>
-                <br>
-                <h3>Risk/Issues</h3>
-                <p>Risk Name: {{report.risk_name}}</p>
-                <p>Risk Description: {{report.risk_desc}}</p>
-                <p>Risk Resolution: {{report.risk_res}}</p>
-                <p>Status: {{report.risk_status}}</p>
-                <br>
-                <h3>Tasks in Progress</h3>
-                <p>Task Name: {{report.task_name}}</p>
-                <p>Task Description: {{report.task_desc}}</p>
-                <p>Member Responsible: {{report.task_member}}</p>
-                <p>% Completed: {{report.task_comp}} %</p>
-                <br>
-                <h3>Upcoming Tasks</h3>
-                <p>Task Name: {{report.task_name_iter}}</p>
-                <p>Task Description: {{report.task_desc_iter}}</p>
-                <p>Member Responsible: {{report.task_member_iter}}</p>
-        {% endif %}
-            </div>
-    {% endfor %}
 
 </body>
 
