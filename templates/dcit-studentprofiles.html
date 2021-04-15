@@ -12,6 +12,24 @@
 
 <style>
 
+.student_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    float: left;
+    width: 20%;
+    padding: 15px;
+    text-align: center;
+    margin-left:30px
+}
+
+.student_card.hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+img {
+  border-radius: 50%;
+}
+
+
 </style>
 
 <body>
@@ -31,35 +49,30 @@
     <br> <br> <br> <br>
     <br>
     <form class="search-wrapper cf" style="float:right" action="/dcitStudentProfiles1" method="POST">
-        <input type="text" name="keyword" placeholder="Enter ID number here" required style="box-shadow: outline;">
+        <input type="text" name="keyword" placeholder="Search here ..." required style="box-shadow: outline;">
         <button type="submit">Search</button>
     </form>
 
     <br> <br> <br>
-    <br> <br>
-
-    {% for message in get_flashed_messages() %}
-        <div class="alert-error"> Error: {{ message }} </div>
-    {% endfor %}
-
-    <br>
+    <br> <br> <br>
 
     {{message }}
 
+    <br> <br> <br>
+
     <!--LIST OF REGISTERED COMPANIES CODE STARTS HERE -->
-    <form action="/dcitStudentProfiles" method='POST'>
+    <table action="/dcitStudentProfiles" method='GET'>
         {% for student in student_list %}
         <div class="student_card">
-        <img src="../static/images/student_pictures/{{student.photo}}" alt=student width="130" height="130">
+        <img src="../static/images/student_pictures/{{student.photo}}" alt=student width="40%" height="130">
         <p>Student Name: {{student.name}}</p>
         <p> Student ID: {{student.uwiid}}</p>
         <p> Email: {{student.email}}</p>
         <p> Degree: {{student.curr_degree}}</p>
         <p> GPA: {{student.gpa}}</p>
-        <button type="submit" id="v_profile" name="v_profile" value={{student.uwiid}}>View More Detail</button>
         </div>
         {% endfor %}
-    </form>
+    </table>
 
 
 </body>
