@@ -253,7 +253,7 @@ def dcitInternList():
             if student[i].design == business.design:
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
+                new_intern = Shortlist(internID=student[i].uwiid, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID].proj_name)
@@ -261,6 +261,7 @@ def dcitInternList():
                 db.session.commit()
                 internlist.append(student[i].name)
                 i = i + 1
+                num_interns = num_interns + 1
             # Filtering for Overly Qualified
 
             set1 = set(list(business.language))
@@ -285,6 +286,7 @@ def dcitInternList():
                 db.session.commit()
                 internlist.append(student[i].name)
                 i = i + 1
+                num_interns = num_interns + 1
 
             # Filtering for Barely Qualified
             if set1.intersection(set2):
@@ -302,14 +304,15 @@ def dcitInternList():
                 db.session.commit()
                 internlist.append(student[i].name)
                 i = i + 1
+                num_interns = num_interns + 1
         else:
             continue
         # print("Business Name: ", business.bname)
         # print(internlist)
-        num_interns = num_interns + 1
+
 
         temp.append(internlist)
-        temp.insert(0, 'NULL')
+        #temp.insert(0)
         temps = []
 
     return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, interns=internships,
