@@ -85,7 +85,7 @@ def signup():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                return render_template('Login.html'), 201
+                return render_template('login.html'), 201
             except IntegrityError:
                 db.session.rollback()
                 flash("Email address already exists")
