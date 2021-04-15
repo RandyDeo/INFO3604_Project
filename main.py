@@ -253,7 +253,7 @@ def dcitInternList():
             if student[i].design == business.design:
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
+                new_intern = Shortlist(internID=student[i].uwiid, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID].proj_name)
@@ -277,7 +277,7 @@ def dcitInternList():
             if set5.issubset(set6):
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
+                new_intern = Shortlist(internID=student[i].uwiid, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID].proj_name)
@@ -294,7 +294,7 @@ def dcitInternList():
             if set5.intersection(set6):
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
+                new_intern = Shortlist(internID=student[i].uwiid, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID - 1].proj_name)
