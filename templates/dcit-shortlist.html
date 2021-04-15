@@ -10,7 +10,33 @@
 </head>
 
 <style>
+.student_card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    float: left;
+    width: 20%;
+    padding: 15px;
+    text-align: center;
+    margin-left: 30px;
+    }
 
+    .student_card.hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    img {
+      border-radius: 50%;
+    }
+
+     button{
+        border-radius: 20px;
+        height: 45px;
+        width: 150px;
+
+    }
+
+    .intern_info{
+        margin-bottom: 240px;
+    }
 
 
 </style>
@@ -24,29 +50,37 @@
                 <li class=""><a href="deadlines"> <i class="fas fa-plus-circle"> </i> DEADLINES </a> </li>
                 <li class=""><a href="dcitStudentProfiles"> <i class="fas fa-users"> </i> STUDENT PROFILES </a> </li>
                 <li class=""><a href="dcitWeeklyReports"> <i class="fas fa-file-alt"> </i> WEEKLY REPORTS </a> </li>
-                <li class="active"><a href="dcitCompanyList"> <i class="fas fa-list-alt"> </i> COMPANY LIST </a> </li>
+                <li class=""><a href="dcitCompanyList"> <i class="fas fa-list-alt"> </i> COMPANY LIST </a> </li>
                 <li class="right"><a href="logout"> <i class="fas fa-sign-in-alt"> </i> LOG OUT</a></li>
             </ul>
         </div>
     </nav>
     <br> <br> <br>
+    <br> <br> <br>
 
     <!--LIST OF SHORTLIST CODE STARTS HERE -->
     <table action="/dcit-shortlist" method='GET'>
-
-
             {% for business in businesses %}
-                        <br>
-                        <p>Business Name: {{business.bname}}</p>
-                        <p>Stipend: ${{business.stipend}}</p>
-                        <p>List of Interns: {{temps[business.businessID]}}</p>
-                        <br>
+                <div class="businessName">
+                    <h1>{{business.bname}}</h1>
+
+                <div class="intern_info">
+                    {% for student in temps[business.businessID] %}
+                        <div class="student_card">
+                            <p> Intern Name : {{ student }}</p>
+                            {% for intern in students_list %}
+                                {% if intern.name == student %}
+                                    <p> Student ID: {{ intern.uwiid }}</p>
+                                    <p> Student GPA: {{ intern.gpa }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                </div>
 
             {% endfor %}
-
     </table>
-
-
 </body>
 
 </html>
