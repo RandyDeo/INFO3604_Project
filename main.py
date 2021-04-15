@@ -11,9 +11,8 @@ import os
 import requests
 import json
 
-
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
-
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, \
+    Deadlines
 
 ''' Begin boilerplate code '''
 
@@ -61,7 +60,6 @@ jwt = JWT(app, authenticate, identity)
 ''' End JWT Setup '''
 
 
-
 @app.route("/")
 def home():
     return render_template("landing-page.html")
@@ -89,8 +87,8 @@ def signup():
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
-                #flash("Email address already exists")
-                #return render_template ("login.html"), 400
+                # flash("Email address already exists")
+                # return render_template ("login.html"), 400
                 return 'Email address already exists', render_template("login.html"), 400
         return
 
@@ -117,7 +115,7 @@ def login():
         if user is None:
             flash("Please create an account!")
             return render_template("signup.html"), 400
-            #return "Please create an account!"
+            # return "Please create an account!"
     flash("Invalid login!")
     return render_template("login.html"), 401
 
@@ -146,22 +144,21 @@ def deadlines():
         deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
         admin = User.query.filter_by(occupation="DCIT").first()
 
-
         new_admin = DCITAdmin(aname=admin.name, aemail=admin.email)
         db.session.add(new_admin)
         db.session.commit()
 
         if deadline is None:
-                new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-                new_deadline.date = datetime.now()
+            new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
+            new_deadline.date = datetime.now()
         try:
-                db.session.add(new_deadline)
-                db.session.commit()
-                flash ("Deadline has been posted!")
-                return redirect(url_for('deadlines'))
+            db.session.add(new_deadline)
+            db.session.commit()
+            flash("Deadline has been posted!")
+            return redirect(url_for('deadlines'))
         except IntegrityError:
-                db.session.rollback()
-                return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
+            db.session.rollback()
+            return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
     return
 
 
@@ -180,6 +177,7 @@ def dcitStudentProfiles():
         c_list = parsed_courses.query.all()
         return render_template("dcit-individualprofile.html", course_list=c_list, st_curr=st_curr)
 
+
 # DCIT Student Profiles Search Function works with IDs lol
 @app.route("/dcitStudentProfiles1", methods=(['POST']))
 @login_required
@@ -195,9 +193,9 @@ def searchID():
             report = ""
             return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
         else:
-            #report = "No student found."
+            # report = "No student found."
             flash("No student found!")
-            #return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+            # return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
             return render_template("dcit-studentprofiles.html")
     return error(), 400
 
@@ -255,7 +253,7 @@ def dcitInternList():
             if student[i].design == business.design:
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
+                new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID].proj_name)
@@ -317,6 +315,7 @@ def dcitInternList():
     return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, interns=internships,
                            studnts=students)
 
+
 # DCIT Intern List - Remove
 @app.route("/dcit-shortlist/<internID>", methods=(['DELETE']))
 @login_required
@@ -328,18 +327,20 @@ def deleteIntern(internID):
     db.session.commit()
     return 'Deleted intern from this internship', 204
 
+
 # DCIT Intern List - Add
 @app.route("/dcit-shortlist/<internID>", methods=(['PUT']))
 @login_required
 def addIntern(internID):
     new_intern = Shortlist.query.filter_by(internID).first()
-    if new_intern ==None:
-        flash ("Invalid id")
+    if new_intern == None:
+        flash("Invalid id")
     intern = request.form.get('intern_name')
     new_intern.intern_name = intern
     db.session.add(new_intern)
     db.session.commit()
     return "Updated with new intern", 201
+
 
 # STUDENT ROUTES
 # Student home route
