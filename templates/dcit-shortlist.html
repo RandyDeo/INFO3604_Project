@@ -70,12 +70,15 @@
                             <!--<p> Student ID: {{student.uwiid}}</p> -->
                             <p> Student ID: </p>
                             <p> Student GPA: </p>
-                            <button> Remove intern </button>
+                            <a href="/dcit-shortlist" method='DELETE'>
+                                <button> Remove intern </button>
+                            </a>
+
                         </div>
                     {% endfor %}
                 </div>
                 <div>
-                    <form>
+                    <form action="/dcit-shortlist-add" method='PUT'>
                         <input type="intern_name" id="intern_name" placeholder="Enter a new intern" />
                         <button> Add a new intern </button>
                     </form>
@@ -84,8 +87,15 @@
                 </div>
 
             {% endfor %}
+
+
      <br> <br>
     </table>
+
+    {% for business in businesses %}
+        <h1>{{business.bname}}</h1>
+        <p> {{temps[business.businessID]}}</p>
+    {% endfor %}
 
 </body>
 

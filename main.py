@@ -11,7 +11,9 @@ import os
 import requests
 import json
 
-from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Shortlist, Deadlines
+
+from models import db, User, Student, Business, Internship, parsed_courses, Report, DCITAdmin, Risk, Shortlist, Deadlines
+
 
 ''' Begin boilerplate code '''
 
@@ -59,6 +61,7 @@ jwt = JWT(app, authenticate, identity)
 ''' End JWT Setup '''
 
 
+
 @app.route("/")
 def home():
     return render_template("landing-page.html")
@@ -75,7 +78,7 @@ def signup():
         email = request.form.get('email')
         name = request.form.get('name')
         occupation = request.form.get('occupation')
-        password = request.form.get('passw')
+        password = request.form.get('pass')
         user = User.query.filter_by(email=email).first()
         if user is None:
             new_user = User(name=name, email=email, occupation=occupation)
@@ -86,9 +89,10 @@ def signup():
                 return render_template('Login.html'), 201
             except IntegrityError:
                 db.session.rollback()
-                flash("Email address already exists")
+                #flash("Email address already exists")
                 #return render_template ("login.html"), 400
-        return render_template("signup.html"), 401
+                return 'Email address already exists', render_template("login.html"), 400
+        return
 
 
 @app.route("/login", methods=(['GET', 'POST']))
@@ -98,23 +102,24 @@ def login():
 
     elif request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('passw')
+        password = request.form.get('pass')
 
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             time = timedelta(hours=1)
             login_user(user, False, time)
-            if user.occupation == "Business" or user.occupation == "business":
+            if user.occupation == "Business":
                 return businessHome(), 200
-            if user.occupation == "Student" or user.occupation == "student":
+            if user.occupation == "Student":
                 return studentHome(), 200
-            elif user.occupation == "DCIT" or user.occupation == "dcit":
+            elif user.occupation == "DCIT":
                 return dcitHome(), 200
-        elif user is None:
+        if user is None:
             flash("Please create an account!")
             return render_template("signup.html"), 400
-        flash("Invalid login!")
-        return render_template("login.html"), 401
+            #return "Please create an account!"
+    flash("Invalid login!")
+    return render_template("login.html"), 401
 
 
 # new_admin = DCIT_Admin(aname=user.name, aemail=user.email)
@@ -147,10 +152,8 @@ def deadlines():
         db.session.commit()
 
         if deadline is None:
-                curr_date = datetime.now()
                 new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-                new_deadline.date = curr_date.date()
-
+                new_deadline.date = datetime.now()
         try:
                 db.session.add(new_deadline)
                 db.session.commit()
@@ -176,7 +179,6 @@ def dcitStudentProfiles():
         st_curr = Student.query.filter_by(uwiid=st_id).first()
         c_list = parsed_courses.query.all()
         return render_template("dcit-individualprofile.html", course_list=c_list, st_curr=st_curr)
-
 
 # DCIT Student Profiles Search Function works with IDs lol
 @app.route("/dcitStudentProfiles1", methods=(['POST']))
@@ -253,7 +255,7 @@ def dcitInternList():
             if student[i].design == business.design:
                 de_check = True
             if l_check == True & db_check == True & de_check == True:
-                new_intern = Shortlist(internID=student[i].uwiid, intern_name=student[i].name,
+                new_intern = ShortList(internID=student[i].studentID, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
                                        proj_name=internships[business.businessID].proj_name)
