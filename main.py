@@ -87,7 +87,7 @@ def signup():
             except IntegrityError:
                 db.session.rollback()
                 flash("Email address already exists")
-                # return render_template ("login.html"), 400
+                #return render_template ("login.html"), 400
         return render_template("signup.html"), 401
 
 
@@ -141,21 +141,24 @@ def deadlines():
         deadline = Deadlines.query.filter_by(deadline_message=deadline_message).first()
         admin = User.query.filter_by(occupation="DCIT").first()
 
+
         new_admin = DCITAdmin(aname=admin.name, aemail=admin.email)
         db.session.add(new_admin)
         db.session.commit()
 
         if deadline is None:
-            new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
-            new_deadline.date = datetime.now()
+                curr_date = datetime.now()
+                new_deadline = Deadlines(deadline_message=deadline_message, deadline_adminID=new_admin.adminID)
+                new_deadline.date = curr_date.date()
+
         try:
-            db.session.add(new_deadline)
-            db.session.commit()
-            flash("Deadline has been posted!")
-            return redirect(url_for('deadlines'))
+                db.session.add(new_deadline)
+                db.session.commit()
+                flash ("Deadline has been posted!")
+                return redirect(url_for('deadlines'))
         except IntegrityError:
-            db.session.rollback()
-            return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
+                db.session.rollback()
+                return 'Deadline cannot be added. Try again!', render_template("dcit-deadlines.html"), 400
     return
 
 
@@ -176,7 +179,7 @@ def dcitStudentProfiles():
 
 
 # DCIT Student Profiles Search Function works with IDs lol
-@app.route("/dcitStudentProfiles", methods=(['POST']))
+@app.route("/dcitStudentProfiles1", methods=(['POST']))
 @login_required
 def searchID():
     if request.method == 'POST':
@@ -190,9 +193,9 @@ def searchID():
             report = ""
             return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
         else:
-            # report = "No student found."
+            #report = "No student found."
             flash("No student found!")
-            # return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
+            #return render_template("dcit-studentprofiles.html", message=report, student_list=asgs)
             return render_template("dcit-studentprofiles.html")
     return error(), 400
 
@@ -339,8 +342,8 @@ def studentInternship():
 @login_required
 def studentDeadlines():
     asgs = Deadlines.query.all()
-    # asgs = Deadlines.query.filter_by(adminID)
-    return render_template("student-deadlines.html", deadlines=asgs)
+    admin_list = DCITAdmin.query.all()
+    return render_template("student-deadlines.html", deadlines=asgs, admin_list=admin_list)
 
 
 # Student Registration route

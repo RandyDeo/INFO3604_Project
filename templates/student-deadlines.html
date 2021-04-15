@@ -28,9 +28,15 @@
     <br> <br> <br>
 
     {% for deadline in deadlines %}
-        <div class="student_card">
-            <p>{{deadline.deadline_message}}</p>
-            <p> Posted on {{deadline.date}} by {{deadline.deadline_adminID}} </p>
+        <div class="deadline_card">
+            <h2>{{deadline.deadline_message}}</h2>
+
+            {% for admins in admin_list %}
+                {% if admins.adminID == deadline.deadline_adminID %}
+                    <p> Posted on {{deadline.date}} by {{admins.aname}} </p>
+                {% endif %}
+            {% endfor %}
+
         </div>
     {% endfor %}
 </body>
