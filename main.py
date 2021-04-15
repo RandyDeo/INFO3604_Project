@@ -240,11 +240,12 @@ def dcitInternList():
     de_check = False
 
     temp = []
+    i = 0
 
     for business in businesses:
-        if num_interns < business.num_interns:  # Move on to the next company if number of required interns is met
+        if i < business.num_interns:  # Move on to the next company if number of required interns is met
             internlist = []
-            i = 0
+
             # Filtering for Fully Qualified
             if student[i].language == business.language:
                 l_check = True
@@ -304,7 +305,6 @@ def dcitInternList():
                 db.session.commit()
                 internlist.append(student[i].name)
                 i = i + 1
-                num_interns = num_interns + 1
         else:
             continue
         # print("Business Name: ", business.bname)
@@ -320,7 +320,7 @@ def dcitInternList():
 
 
 # DCIT Intern List - Remove
-@app.route("/dcit-shortlist/<internID>", methods=(['DELETE']))
+@app.route("/dcit-shortlist-remove", methods=(['DELETE']))
 @login_required
 def deleteIntern(internID):
     deleted_intern = Shortlist.query.filter_by(internID).first()
@@ -332,7 +332,7 @@ def deleteIntern(internID):
 
 
 # DCIT Intern List - Add
-@app.route("/dcit-shortlist/<internID>", methods=(['PUT']))
+@app.route("/dcit-shortlist-add", methods=(['PUT']))
 @login_required
 def addIntern(internID):
     new_intern = Shortlist.query.filter_by(internID).first()

@@ -70,7 +70,7 @@
                             <!--<p> Student ID: {{student.uwiid}}</p> -->
                             <p> Student ID: </p>
                             <p> Student GPA: </p>
-                            <a href="/dcit-shortlist" method='DELETE'>
+                            <a href="/dcit-shortlist-remove" method='DELETE'>
                                 <button> Remove intern </button>
                             </a>
 
@@ -78,7 +78,7 @@
                     {% endfor %}
                 </div>
                 <div>
-                    <form action="/dcit-shortlist/<internID>" method='PUT'>
+                    <form action="/dcit-shortlist-add" method='PUT'>
                         <input type="intern_name" id="intern_name" placeholder="Enter a new intern" />
                         <button> Add a new intern </button>
                     </form>
