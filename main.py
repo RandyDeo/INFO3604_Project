@@ -298,7 +298,7 @@ def dcitInternList():
     # if (set(temp[0]).intersection(set(temp[1]))) & set(temp[1]).intersection(set(temp[2])):  # Need to edit
     #   set(temp[1]).remove(set(temp[2]))
     temps = []
-    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses)
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, students_list=Students)
 
 
 # DCIT get the company list route  - this is not necessary
@@ -340,6 +340,7 @@ def studentDeadlines():
     asgs = Deadlines.query.all()
     admin_list = DCITAdmin.query.all()
     return render_template("student-deadlines.html", deadlines=asgs, admin_list=admin_list)
+
 
 # Student Registration route
 @app.route("/studentRegistration")
