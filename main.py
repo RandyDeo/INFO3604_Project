@@ -297,7 +297,7 @@ def dcitInternList():
                 new_intern = Shortlist(internID=student[i].studentID, intern_name=student[i].name,
                                        companyID=business.businessID,
                                        company_name=business.bname,
-                                       proj_name=internships[business.businessID].proj_name)
+                                       proj_name=internships[business.businessID - 1].proj_name)
                 db.session.add(new_intern)
                 db.session.commit()
                 internlist.append(student[i].name)
@@ -312,7 +312,7 @@ def dcitInternList():
         temp.insert(0, 'NULL')
         temps = []
 
-    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, internships=interns,
+    return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, interns=internships,
                            studnts=students)
 
 # STUDENT ROUTES
