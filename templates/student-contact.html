@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MMI Student Contact </title>
+    <link rel="stylesheet" href="../static/css/navigationbar.css">
+    <link rel="stylesheet" href="../static/css/card.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+</head>
+
+<style>
+     .container {
+      position: relative;
+      text-align: center;
+      color: white;
+    }
+
+    .top-left {
+      position: absolute;
+      top: 110px;
+      left: 185px;
+      z-index: 1;
+    }
+
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      max-width: 350px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h2{
+        color: #006992;
+        font-size: 28px;
+    }
+
+    .title {
+      font-size: 20px;
+      color: black;
+    }
+
+    p{
+       color: black;
+    }
+
+    a{
+        color: #6DB6D6;
+    }
+
+    .background_image{
+        position: relative;
+        height: 150px;
+        max-width: 350px;
+        background-size: cover;
+        overflow: hidden;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+    }
+
+    .profile_picture{
+        position: relative;
+        top: -70px;
+        height: 120px;
+        width: 120px;
+        margin: auto;
+        border-radius: 50%;
+        border: 5px solid white;
+        overflow: hidden;
+    }
+
+    .text{
+        margin-top: -80px;
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-inverse" style="z-index:2;">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li> <img src=" ../static/images/mmi_logo.png" alt="Match My Interns" width="180" height="75">  </li>
+                <li class=""><a href="studentHome"> <span class = "fa fa-home"> </span> HOME </a> </li>
+                <li><a href="studentRegistration"> <span class = "fas fa-edit"> </span> REGISTER </a></li>
+                <li><a href="studentWeeklyReport"> <span class = "fas fa-file-alt"> </span> WEEKLY REPORTS </a></li>
+                <li><a href="studentDeadlines">  VIEW DEADLINES </a></li>
+                <li class="active"><a href="studentContact"> <span class = "fas fa-phone-alt"> </span> CONTACT </a></li>
+                <li class="right"><a href="logout"> <i class="fas fa-sign-in-alt"> </i> LOG OUT</a></li>
+            </ul>
+        </div>
+    </nav>
+    <br> <br> <br> <br>
+
+    <div class="container">
+        <img src="../static/images/banner.png" height="185" width="100%" style="position: relative; z-index:-1;">
+        <div class="top-left" style="font-size: 45px; top:45px; left: 185px;"><b> Contact Us</b></div>
+        <div class="top-left" style="font-size: 15px;"> <b> We would love to hear any feedback or queries you have pertaining the course. </b> </div>
+    </div>
+    <br> <br> <br>
+    <div class="row" style="padding-left: 45px;">
+        <div class="column">
+              <div class="card">
+                  <div class="background_image">
+                    <img src="../static/images/blue.jpg">
+                  </div>
+                  <div class="profile_picture">
+                        <img src="../static/images/purple.png">
+                  </div>
+                  <div class="text">
+                     <h2> Shareeda Mohammed</h2>
+                     <p class="title">Internship Course Coordinator</p>
+                     <p>University of the West Indies (UWI) </p>
+                     <div style="margin: 24px 0;">
+                       <a href="#"><i class="fas fa-phone-alt"> Number: 868-799-2335</i></a>
+                       <br> <br>
+                       <a href="#"><i class="fas fa-envelope"> Email: courses.infotech@gmail.com</i></a>
+                       <br>
+                       <br>
+                     </div>
+                  </div>
+
+              </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+              <div class="background_image">
+                    <img src="../static/images/blue.jpg">
+              </div>
+              <div class="profile_picture">
+                    <img src="../static/images/purple.png">
+              </div>
+              <div class="text">
+                  <h2> Cynthia Cudjoe</h2>
+                  <p class="title">Internship Course Supervisor</p>
+                  <p>University of the West Indies (UWI) </p>
+                  <div style="margin: 24px 0;">
+                      <a href="#"><i class="fas fa-phone-alt"> Number: 868-737-2195</i></a>
+                      <br> <br>
+                      <a href="#"><i class="fas fa-envelope"> Email: Cynthia.Cudjoe@sta.uwi.edu</i></a>
+                      <br>
+                      <br>
+                  </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+              <div class="background_image">
+                    <img src="../static/images/blue.jpg">
+              </div>
+              <div class="profile_picture">
+                    <img src="../static/images/purple.png">
+              </div>
+              <div class="text">
+                  <h2> Kris Manohar </h2>
+                  <p class="title">Internship Course Supervisor</p>
+                  <p>University of the West Indies (UWI) </p>
+                  <div style="margin: 24px 0;">
+                      <a href="#"><i class="fas fa-phone-alt"> Number: 868-555-0000</i></a>
+                      <br> <br>
+                      <a href="#"><i class="fas fa-envelope"> Email: kris.manohar@sta.uwi.edu</i></a>
+                      <br>
+                      <br>
+                  </div>
+              </div>
+            </div>
+        </div>
+
+         <div class="column">
+            <div class="card">
+                <div class="background_image">
+                    <img src="../static/images/blue.jpg">
+                </div>
+                <div class="profile_picture">
+                    <img src="../static/images/purple.png">
+                </div>
+                <div class="text">
+                    <h2> Kris Manohar </h2>
+                    <p class="title">Internship Course Supervisor</p>
+                    <p>University of the West Indies (UWI) </p>
+                    <div style="margin: 24px 0;">
+                      <a href="#"><i class="fas fa-phone-alt"> Number: 868-555-0000</i></a>
+                      <br> <br>
+                      <a href="#"><i class="fas fa-envelope"> Email: kris.manohar@sta.uwi.edu</i></a>
+                      <br>
+                      <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br> <br>
+</body>
+
+</html>

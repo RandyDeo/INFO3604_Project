@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MMI Student Weekly Status Report </title>
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../static/css/form.css">
+
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
+    <script src="http://code.jquery.com/jquery-1.4.2.js" type="text/javascript"></script>
+    <script type='text/javascript' src="../static/js/form.js"></script>
+    <script src='../static/js/duplicateFields.js'></script>
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+</head>
+
+<body oncontextmenu='return false' class='snippet-body'>
+    <div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
+            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                <h2 id="heading">Fill out the Weekly Status Report</h2>
+                <p>Please fill out all the form fields to go to the next step</p>
+                <form id="msform" action="/displayStudentWeeklyReport", method='POST',  enctype=multipart/form-data>
+                    <!-- progressbar -->
+                    <ul id="progressbar">
+                        <li class="active" id="account" style="width: 20%;"><strong>Project Details</strong></li>
+                        <li id="personal" style="width: 20%;"><strong>Risks/Issues List</strong></li>
+                        <li id="payment" style="width: 20%;"><strong>Tasks in Progress/Completed Tasks</strong></li>
+                        <li id="payment" style="width: 20%;"><strong>Upcoming Tasks in the Next Iteration</strong></li>
+                        <li id="confirm" style="width: 20%;"><strong>Finish</strong></li>
+                    </ul>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div> <br> <!-- fieldsets -->
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Project Details:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 1 - 5</h2>
+                                </div>
+                            </div>
+                            <label class="fieldlabels">Student ID: *</label> <input type="text" id="s_id" name="s_id" placeholder="Student ID" />
+                            <label class="fieldlabels">Project Name: *</label> <input type="text" id="pname" name="pname" placeholder="Project Name" />
+                            <label class="fieldlabels">Date: </label> <input type="date" id="date" name="date" placeholder="Date" />
+                            <label class="fieldlabels">Iteration: *</label> <input type="number" id="iteration_no" name="iteration_no" placeholder="Iteration" />
+                            <label class="fieldlabels">Implementation Status: </label> <input type="text" name="impl_status" id="impl_status" placeholder="Implementation Status" />
+                            <label class="fieldlabels">Project Highlights: </label> <input type="text" name="highlights" id="highlights" placeholder="Project Highlights" />
+                        </div> <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Risks/Issues List</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 2 - 5</h2>
+                                </div>
+                            </div>
+                            <label class="fieldlabels">Date Entered: </label> <input type="date" id="risk_date" name="risk_date" placeholder="Date Entered" />
+                            <label class="fieldlabels">Risk/Issue: *</label> <input type="text" name="risk" id="risk" placeholder="Risk" />
+                            <label class="fieldlabels">Description: *</label> <input type="text" name="description" id= "description" placeholder="Description" />
+                            <label class="fieldlabels">Resolution: *</label> <input type="text" name="resolution" id= "resolution" placeholder="Resolution" />
+
+                            <label class="fieldlabels"> Risk Status: </label>
+                            <select name="risk_status" id="risk_status">
+                                <option value=""> </option>
+                                <option value ="new"> New </option>
+                                <option value ="ongoing"> Ongoing </option>
+                                <option value ="closed"> Closed </option>
+                            </select>
+                            <br> <br>
+                            <a style="font-size:18px;width:33%; color: #006992;" id="" title="Add a New Risk"><i class="fas fa-plus-circle"> Add a New Task </i></a>
+                            <br> <br>
+                            <a style="font-size:18px;width:33%; color: #006992;" id="" title="Remove a New Risk"><i class="fas fa-minus-circle"> Remove a New Task </i></a>
+                            <br> <br>
+                        </div>
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Tasks in Progress/Completed Tasks</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 3 - 5</h2>
+                                </div>
+                            </div>
+
+                            <label class="fieldlabels">Task Name: *</label> <input type="text" name="task_name1" id="task_name1" placeholder="Task Name" />
+                            <label class="fieldlabels">Task Description: </label> <input type="text" name="task_descript1" id="task_descript1" placeholder="Task Description" />
+                            <label class="fieldlabels">Team Member Responsible: </label> <input type="text" name="team_member1" id="team_member1" placeholder="Team Member Responsible" />
+                            <label class="fieldlabels">% Completed: </label> <input type="text" name="completed" id="completed" placeholder="% Completed" />
+
+                            <a style="font-size:18px;width:33%; color: #006992;" id="add1" title="Add a New Task"><i class="fas fa-plus-circle"> Add a New Task </i></a>
+                            <br> <br>
+                            <a style="font-size:18px;width:33%; color: #006992;" id="delete1" title="Remove a New Task"><i class="fas fa-minus-circle"> Remove a New Task </i></a>
+
+                        </div>
+
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+
+                    <fieldset>
+                        <div class="form-card">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <h2 class="fs-title">Upcoming Tasks for the Next Iteration</h2>
+                                    </div>
+                                    <div class="col-5">
+                                        <h2 class="steps">Step 4 - 5</h2>
+                                    </div>
+                                </div>
+                                <div id='clonedSection1' class='clonedSection'>
+                                    <label class="fieldlabels">Task Name: *</label> <input type="text" name="task_name" id="task_name" placeholder="Task Name" />
+                                    <label class="fieldlabels">Task Description: </label> <input type="text" name="task_descript" id="task_descript" placeholder="Task Description" />
+                                    <label class="fieldlabels">Team Member Responsible: </label> <input type="text" name="team_member" id="team_member" placeholder="Team Member Responsible" />
+                                </div>
+
+                                <a style="font-size:18px;width:33%; color: #006992;" id="add" title="Add a New Task"><i class="fas fa-plus-circle"> Add a New Task </i></a>
+                                <br> <br>
+                                <a style="font-size:18px;width:33%; color: #006992;" id="delete" title="Remove a New Task"><i class="fas fa-minus-circle"> Remove a New Task </i></a>
+                            <!--<input type='button' id='delete' value='remove name' /> -->
+                        </div>
+                        <input type="Submit" name="next" class="next action-button" value="Submit" />
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+
+
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Finish:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 5 - 5</h2>
+                                </div>
+                            </div> <br><br>
+                            <h2 class="purple-text text-center"><strong>SUCCESS !</strong></h2> <br>
+                            <div class="row justify-content-center">
+                                <div class="col-3"> <img src=" ../static/images/blue_tick.png" class="fit-image"> </div>
+                            </div> <br><br>
+                            <div class="row justify-content-center">
+                                <div class="col-7 text-center">
+                                    <h5 class="purple-text text-center">You Have Successfully Signed Up</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

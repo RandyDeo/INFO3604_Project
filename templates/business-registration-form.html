@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>MMI Business Registration Form</title>
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../static/css/form.css">
+
+    <script src="http://code.jquery.com/jquery-1.4.2.js" type="text/javascript"></script>
+    <script src='../static/js/business-duplicateField.js'></script>
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
+    <script type='text/javascript' src="../static/js/form.js"></script>
+</head>
+
+
+<body oncontextmenu='return false' class='snippet-body'>
+
+    <div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
+            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                <h2 id="heading">Register Your Business for the Internship Course</h2>
+                <p>Please fill out all the form fields to go to the next step</p>
+                <form id="msform" action="/displayBusinessForm" method='POST'>
+                    <!-- progressbar -->
+                    <ul id="progressbar">
+                        <li class="active" id="account"><strong>Company Details</strong></li>
+                        <li id="personal"><strong>Skills Required</strong></li>
+                        <li id="payment"><strong>Project Details</strong></li>
+                        <li id="confirm"><strong>Finish</strong></li>
+                    </ul>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div> <br> <!-- fieldsets -->
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Company Details:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 1 - 4</h2>
+                                </div>
+                            </div>
+                            <label class="fieldlabels">Company Name: *</label> <input type="text" id="bname" name="bname" placeholder="Company Name" />
+                            <label class="fieldlabels">Number of Interns Required: *</label> <input type="number" id="num_interns" name="num_interns" placeholder="Number of Interns Required" />
+                            <label class="fieldlabels">Duration: </label> <input type="text" name="duration" id="duration" placeholder="Duration" />
+                            <!--<label class="fieldlabels">Credits: *</label> <input type="number" name="credits" placeholder="Credits" /> -->
+                            <label class="fieldlabels"> Credits: </label>
+                            <select name="credits" id="credits">
+                                <option value=""> </option>
+                                <option value ="3"> 3 </option>
+                                <option value ="6"> 6 </option>
+                            </select>
+                            <br> <br>
+                            <label class="fieldlabels">Stipend: </label> <input type="text" name="stipend" id="stipend" placeholder="Stipend" />
+                        </div> <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Technical Skills:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 2 - 4</h2>
+                                </div>
+                            </div> <label class="fieldlabels">Languages: *</label> <input type="text" name="lang" id="lang" placeholder="Separate languages using , (Eg. Java, Python)" />
+                            <label class="fieldlabels">Designing: *</label> <input type="text" name="design" id="design" placeholder="Separate Design skill using , (Eg. Mobile, Web)" />
+                            <label class="fieldlabels">Database Management Systems: *</label> <input type="text" name="dbms" id="dbms" placeholder="Separate required Database knowledge using , (Eg. MySQL, Firebase)" />
+                            <label class="fieldlabels">Soft Skills: *</label> <input type="text" name="soft_skills" id= "soft_skills" placeholder="Separate Soft Skills using , (Eg. Hardworking, Adaptable)" />
+
+                        </div> <input type="button" name="next" class="next action-button" value="Next" /> <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Project Details:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 3 - 4</h2>
+                                </div>
+                            </div>
+                            <div id='clonedSection1' class='clonedSection'>
+                                <label class="fieldlabels">Project Name: *</label> <input type="text" name="proj_name" id="proj_name" placeholder="Project Name" />
+                                <label class="fieldlabels">Project Description: *</label> <input type="text" name="proj_descript" id="proj_descript" placeholder="Project Description" />
+                                <label class="fieldlabels">Assigned Activities: *</label> <input type="text" name="activities" id="activities" placeholder="Project Activities" />
+                            </div>
+                            <a style="font-size:18px;width:33%; color: #006992;" id="add" title="Add a New Project"><i class='fas fa-plus'> Add a New Project </i></a>
+                            <br> <br>
+                            <a style="font-size:18px;width:33%; color: #006992;" id="delete" title="Remove a New Task"><i class="fas fa-minus-circle"> Remove a New Task </i> </a>
+
+                        </div>
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-card">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="fs-title">Finish:</h2>
+                                </div>
+                                <div class="col-5">
+                                    <h2 class="steps">Step 4 - 4</h2>
+                                </div>
+                            </div> <br><br>
+                            <h2 class="purple-text text-center"><strong>SUCCESS !</strong></h2> <br>
+                            <div class="row justify-content-center">
+                                <div class="col-3"> <img src=" ../static/images/blue_tick.png" class="fit-image"> </div>
+                            </div> <br><br>
+                            <div class="row justify-content-center">
+                                <div class="col-7 text-center">
+                                    <h5 class="purple-text text-center">You Have Successfully Signed Up</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" name="next" class="next action-button" value="Submit" />
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
