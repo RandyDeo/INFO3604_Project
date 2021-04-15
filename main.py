@@ -317,6 +317,30 @@ def dcitInternList():
     return render_template("dcit-shortlist.html", temps=temp.copy(), businesses=businesses, interns=internships,
                            studnts=students)
 
+# DCIT Intern List - Remove
+@app.route("/dcit-shortlist/<internID>", methods=(['DELETE']))
+@login_required
+def deleteIntern(internID):
+    deleted_intern = Shortlist.query.filter_by(internID).first()
+    if deleted_intern == None:
+        flash("Invalid id")
+    db.session.delete(deleted_intern)
+    db.session.commit()
+    return 'Deleted intern from this internship', 204
+
+# DCIT Intern List - Add
+@app.route("/dcit-shortlist/<internID>", methods=(['PUT']))
+@login_required
+def addIntern(internID):
+    new_intern = Shortlist.query.filter_by(internID).first()
+    if new_intern ==None:
+        flash ("Invalid id")
+    intern = request.form.get('intern_name')
+    new_intern.intern_name = intern
+    db.session.add(new_intern)
+    db.session.commit()
+    return "Updated with new intern", 201
+
 # STUDENT ROUTES
 # Student home route
 @app.route("/studentHome", methods=(['GET']))
